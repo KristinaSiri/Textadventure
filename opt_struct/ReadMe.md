@@ -1,3 +1,15 @@
+### nutzung von KI
+Wie bei der einzelnen Abschnitten vielleicht auffällt wurde mit KI gearbeitet. Die Nutzung dieser beschränkte sich dabei aber auf eine art tutor mit nachfragen zur Implementation.
+Sie wurde also nur genutz wenn ich bereits wusste was ich tun wollt, jedoch nicht wusste wie z.B. der syntax oder einzelne schritte zur implementation.
+
+Zum Beispiel wusste ich, dass ich Instanzen in Locations über structs definieren wollte, und auch das ich diese definierten instanzen dann irgendwie (wahrscheinlich mit pointern) in die struct der Location verlinken will um die structs der instanzen verknüpft an die location auslesen zu können, wusste aber nicht wie genau der syntax dafür aussieht. Ich hab mir dann ein snippet für Doors geben lassen was das macht und die logik später in der erweiterung auf objekte und personen übertragen. Sonst ist die Logik der Strukturen im GameState vollständig eigenständig.
+
+Zusammenhängend damit, wurde auch für das tatsächliche "bauen" der Welt in functions KI zur hilfe herangezogen. In der vorherigen implementatioin habe ich die welt über ein großes statisches Array der locations gebaut in welchen doors und objects fest eingebettet waren. Ich wollte beim bauen dann in drei großen arrays zunächst alle instanzen definieren. Um diese dann nach belieben in die Locations zu legen. Da war ich mir wieder wegen der pointer logik unsicher und außerdem wusste ich nicht wie ich solche " [DOOR_START_CHAMBER] = " "Aliase" für statische array geschrieben werden müssen, dachte mir aber das es geht. enum {} hat die KI vorgeschlagen und das habe ich übernommen da ich es davor nicht kannte.
+
+Es gab/gibt einzelne funktionen wie otherside() oder teile von showMenu() welche zu teilen auch mit KI geschrieben wurden. Diese wurden/werden aber im zuge neuer logik mit eigenem code ersetzt und dienten als erste stütze in der umsetzung. 
+
+Gernerell kam die logik zur umsetzung aber immer von meiner seite und ich habe alle vorschläge, falls ich sie übernommen habe, gründlich nachvollzogen und auf meine situation angepasst.
+Vieles davon ist aber z.B. auch durch vorschläge aus bugfixes an eigenem code hervorgegangen.
 
 ### parsexec.c
 parsexec.c und showMenu() kann in dieser logik wahrscheinlich vollständig durch look ersetzt werden.
