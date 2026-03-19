@@ -75,12 +75,6 @@ Location *gameCurrentLocation(GameState *gs) {
 
 
 
-static unsigned otherSide(const Door *d, unsigned current)
-{
-    if (d->targetIndex[0] == current) return d->targetIndex[1];
-    if (d->targetIndex[1] == current) return d->targetIndex[0];
-    return current;
-}
 
 
 void handleLook(GameState *gs) {
@@ -127,29 +121,3 @@ void handleInteract(GameState *gs) {
 
 
 
-void handleGo(GameState *gs)
-{
-    Location *current = &gs->locations[gs->currentLocation];
-    
-    printf("\nWhere do you want to go?\n");
-    
-    for (unsigned i = 0; i < current->doorCount; i++) {
-        printf("%u. %s\n", i + 1, current->doors[i]->name);
-    }
-    printf("0. Back to Action Menu\n");
-    
-    int choice;
-    scanf("%d", &choice);
-    
-    if (choice == 0) {
-        return;
-    }
-    
-    if (choice > 0 && choice <= (int)current->doorCount) {
-        const Door *d = current->doors[choice - 1];
-        gs->currentLocation = otherSide(d, gs->currentLocation);
-        printf("You go to %s.\n", gs->locations[gs->currentLocation].description);
-    } else {
-        printf("Invalid choice.\n");
-    }
-}
