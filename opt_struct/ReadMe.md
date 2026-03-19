@@ -1,4 +1,10 @@
-Ein paar überlegungen zur Umsetzung und Nachfragen meinerseits:
+
+### parsexec.c
+parsexec.c und showMenu() kann in dieser logik wahrscheinlich vollständig durch look ersetzt werden.
+
+
+
+### Ein paar überlegungen zur Umsetzung und Nachfragen meinerseits:
 
 
 hab mir das gestern und vorgestern mal angeschaut
