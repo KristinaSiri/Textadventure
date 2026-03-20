@@ -6,6 +6,6 @@
 void gameInit(GameState *gs);
 Location *gameCurrentLocation(GameState *gs);
 void handleLook(GameState *gs);
-void handleGo(GameState *gs);
+void handleInteract(GameState *gs, void *prxy , objektType typ);
 
 #endif
