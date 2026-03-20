@@ -3,22 +3,41 @@
 
 #include <stdbool.h>
 
+typedef struct GameState GameState;
+
+typedef void (*ActionFunc)(GameState *gs, void* target);
+
+typedef enum {TYPE_DOOR, TYPE_OBJECT, TYPE_PERSON} objektType;
+
+typedef struct {
+    char *name;
+    ActionFunc execute;
+} Action;
+
+
 typedef struct  {
     const char *name;
     const char *description;
     unsigned    targetIndex[2];
     bool        locked;
+    Action      actions[3];
+    unsigned    actionCount;
+    
 } Door;
 
 typedef struct {
     const char *name;
     const char *description;
+    Action      actions[3];
+    unsigned    actionCount;
 } Objekt;
 
 
 typedef struct {
     const char *name;
     const char *description;
+    Action      actions[3];
+    unsigned    actionCount;
 } Person;
 
 #define max_exits 4
@@ -43,12 +62,12 @@ typedef struct {
 } Location;
 
 
-typedef struct  {
+typedef struct GameState {
     Location *locations;
     unsigned numLocations;
     unsigned currentLocation;
     bool     running;
-} GameState;
+};
 
 
 void gameInit(GameState *gs);
