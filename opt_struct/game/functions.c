@@ -77,12 +77,6 @@ Location *gameCurrentLocation(GameState *gs) {
 
 
 
-static unsigned otherSide(const Door *d, unsigned current)
-{
-    if (d->targetIndex[0] == current) return d->targetIndex[1];
-    if (d->targetIndex[1] == current) return d->targetIndex[0];
-    return current;
-}
 
 
 void handleInteract(GameState *gs, void *prxy , objektType typ);
