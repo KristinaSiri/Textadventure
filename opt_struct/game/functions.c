@@ -14,13 +14,17 @@ enum { DOOR_START_CHAMBER, DOOR_COUNT };
 enum { OBJ_TORCH, OBJ_STONE, OBJ_COUNT };
 enum { NPC_MINER, NPC_GUARD, NPC_COUNT };
 
-
+void open_door(GameState *gs, void* prxy);
 
 static const Door doorPool[DOOR_COUNT] = {
     [DOOR_START_CHAMBER] = {
         .name = "stone arch",
         .description = "A rough archway connects cave and chamber.",
         .targetIndex = { LOC_START, LOC_CHAMBER },
+        .actions    = {
+            {"open", open_door}
+        },
+        .actionCount = 1,
         .locked = false
     }
 };
@@ -135,8 +139,9 @@ void handleLook(GameState *gs) {
     }
 
 
-    
 }
+
+
 
 
 void handleInteract(GameState *gs, void *prxy , objektType typ) {
@@ -148,8 +153,15 @@ void handleInteract(GameState *gs, void *prxy , objektType typ) {
             printf("%d. %s\n", i+1, d -> actions[i].name);
         }
 
+        printf("\nYour Choice: ");
+
         int choice;
         scanf("%d", &choice);
+
+        if (choice == 0) {
+            printf("\n\n\nback to looking...\n\n\n");
+            return;
+        }
 
         if (choice <= d -> actionCount) d -> actions[choice-1].execute(gs, d);
         printf("invalid");
@@ -158,13 +170,20 @@ void handleInteract(GameState *gs, void *prxy , objektType typ) {
 
     else if (typ == TYPE_PERSON) {
         Person *p = (Person*)prxy;
-        printf("\n What do you want to do?\n");
+        printf("\nWhat do you want to do?\n");
         for (int i = 0; i < p -> actionCount; i++) {
             printf("%d. %s\n", i+1, p -> actions[i].name);
         }
 
+        printf("\nYour Choice: ");
+
         int choice;
         scanf("%d", &choice);
+        
+        if (choice == 0) {
+            printf("\n\n\nback to looking...\n\n\n");
+            return;
+        }
 
         if (choice <= p -> actionCount) p -> actions[choice-1].execute(gs, p);
         printf("invalid");
@@ -172,13 +191,20 @@ void handleInteract(GameState *gs, void *prxy , objektType typ) {
 
     else if (typ == TYPE_OBJECT) {
         Objekt *o = (Objekt*)prxy;
-        printf("\n What do you want to do?\n");
+        printf("\nWhat do you want to do?\n");
         for (int i = 0; i < o -> actionCount; i++) {
             printf("%d. %s\n", i+1, o -> actions[i].name);
         }
+        
+        printf("\nYour Choice: ");
 
         int choice;
         scanf("%d", &choice);
+
+        if (choice == 0) {
+            printf("\n\n\nback to looking...\n\n\n");
+            return;
+        }
 
         if (choice <= o -> actionCount) o -> actions[choice-1].execute(gs, o);
         printf("invalid");
@@ -187,4 +213,17 @@ void handleInteract(GameState *gs, void *prxy , objektType typ) {
 }
 
 
+void open_door(GameState *gs, void* prxy) {
+    Door *d = (Door*)prxy;
+    if (d -> locked) {
+        printf("\n\n\nThis door is locked.\nTry using a key...\n\n\n");
+        return;
+    }
+    else {
+        gs -> currentLocation == d -> targetIndex[0] ? gs -> currentLocation = d -> targetIndex[1], handleLook(gs) :
+        gs -> currentLocation == d -> targetIndex[1] ? gs -> currentLocation = d -> targetIndex[0], handleLook(gs) :
+        printf("You are not supposed to be here!");
+    }
 
+
+}
