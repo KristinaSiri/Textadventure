@@ -10,7 +10,7 @@ int main(void)
     printf("Welcome to Text Adventure!\n");
     
     while (gs.running) {
-        showMenu(&gs);
+        handleLook(&gs);
     }
     
     printf("Goodbye!\n");
