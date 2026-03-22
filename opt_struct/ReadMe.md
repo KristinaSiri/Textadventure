@@ -1,10 +1,51 @@
+
+
+
+### prxys, tokens und actions
+
+Ich hoffe es ist nicht falsch, dass ich stolz auf diese logik bin. Aber ich habe wirklich lange überlegt und es erweist sich bisher als sehr felxibel.
+
+Zünächst habe ich mir in env_handleInteract() überlegt wie ich am besten eine interaction proxy aufbauen kann in welcher auf den "inhalt" der Instanz (also Door, Person oder Objekt) zugreifen kann. Die Antwort war klar: ein Pointer auf die Instanz, übergeben in env_handleLook(). Ich wusste blöß nicht wie den pointer im head von env_handleInteract() deklarieren muss weil er ja auf drei verschiedene Strukturen zeigen kann. 
+Dann habe ich void pointer entdeckt aber ich musste ein weiters schnipsel an art der struktur übergeben. Ich wollte es wieder über enum machen aber es muste typdef enum sein, damit ich auch das deklarieren kann... 
+Dann gibt es drei switch statements in env_handleInteract(). Fand ich schon da etwas klobig da sie im prinzip das gleiche machen. Und ich es auch über einen token lösen kann.
+
+Der token void pointer ist zusammen mit der Actions struct wahrscheinlich mein magnum opus in diesem Projekt. Actions.actionFunc und .token erlauben es ziemlich flexible aktionen zu bauen da der token im argument von actionFunc unmittelbar aus Action übergeben werden kann.
+
+Wie mächtig diese struct ist, ist mir gestern aufgefallen als ich bei mehreren probloemen begann die recht umständlich zu lösen, mir dann aber aufgefallen ist, dass ich sie relativ einfach über den Action.token lösen kann. Oder das ich die Action struktur neben den uhrsprünglichen act_funkionen bei env_handleInteract auch für itm_ oder sat_funktionen aus relativ anderen strukturen nutzen kann (Die Prefixe sind etwas lose weil theoretisch alle funktionen überall eingesetzt werden könn, unübersichtlich). Oder wie es mir sowieso schon kratz env_funktionen wie env_hanleInteract auch als actionFunc zu schreiben, was eigentlich ziemlich einfach gehen sollte, wo es aber auch noch mehr potential gibt.
+
+Und mir ist grade beim schreiben auch aufgefallen wie man das machen könnte. Und es hängt eigentlich ehr mit einem anderen itch zusammen der mich die ganze zeit stört. Um allgemeine Funktionen wie unOrLock, satisfy oder giveItem zu schreiben, überge ich als token momentan den Pointer auf den relevanten Eintrag der Instanz, und packe ihn in der Funktion unter Anahme, dasd jede instanz einen eintrag der genau dieser Form hat aus und arbeite damit. 
+Was mich etwas stört, und was u.a. ja auch der Grund war ist, dass prxy für diese allgemeinen Funktionen einfach mitgeschleppt wird, weil es schwer ist die struct info im allgemeinen Fall mit zu übergeben ohne den token dafür zu verbrennen (was ja theorteisch auch gehen würde die funktionen aber zumindest für diese fälle unnötig mit switch cases für vollkommen identische Abläufe aufblähen würde). 
+
+
+Falls man aber mal allgemeien funktionen mit leicht strukturabhängigen abläufen braucht oder man noch viel komplexere funktionen bauen möchte sollte ich dem token eine eigene struktur aus prxyTyp und einer liste and void* pointern bauen. Ich weiß zwar nicht wofür, aber die möglichkeiten wären insane.
+
+
+Das ganze neigt aber denke ich dazu unübersichtlich zu werde.
+
+
+
+
+
+
+
 ### nutzung von KI
+#### UPDATE
+
+Bis auf einzelne strukturen in der gs.h datei welche im ersten push als blueprint für mich dienten, befindet sich nun kein Code mehr in opt_struct welcher unmittelbar durch KI erstellt wurde. Unten angeführte funktionsskizzen wurden dabei im zuge der neuen logik vollständig durch selbstproduzierte ersetzt.
+
+Ausnahmen sind einzelne Zeilen welche im zuge von bugfixes übernommen wurden. Die KI eigenen kommentare dienen als markierung. Sie müssten sich von ein paar meiner Kommtare abheben. Bisher sind das jedoch nur drei kleine bugs in verschieden fuktionen in functions.c.
+
+KI wird jedoch fern von bugfixes weiterhin indirekt als Nachschlagewerk/Tutor verwendet. Dabei habe ich z.B. noch ein paar nachfragen zum robusten handeln von void pointern gestellt. 
+
+#### UPDATE
+
+
 Wie bei der einzelnen Abschnitten vielleicht auffällt wurde mit KI gearbeitet. Die Nutzung dieser beschränkte sich dabei aber auf eine art tutor mit nachfragen zur Implementation.
 Sie wurde also nur genutz wenn ich bereits wusste was ich tun wollt, jedoch nicht wusste wie z.B. der syntax oder einzelne schritte zur implementation.
 
 Zum Beispiel wusste ich, dass ich Instanzen in Locations über structs definieren wollte, und auch das ich diese definierten instanzen dann irgendwie (wahrscheinlich mit pointern) in die struct der Location verlinken will um die structs der instanzen verknüpft an die location auslesen zu können, wusste aber nicht wie genau der syntax dafür aussieht. Ich hab mir dann ein snippet für Doors geben lassen was das macht und die logik später in der erweiterung auf objekte und personen übertragen. Sonst ist die Logik der Strukturen im GameState vollständig eigenständig.
 
-Zusammenhängend damit, wurde auch für das tatsächliche "bauen" der Welt in functions KI zur hilfe herangezogen. In der vorherigen implementatioin habe ich die welt über ein großes statisches Array der locations gebaut in welchen doors und objects fest eingebettet waren. Ich wollte beim bauen dann in drei großen arrays zunächst alle instanzen definieren. Um diese dann nach belieben in die Locations zu legen. Da war ich mir wieder wegen der pointer logik unsicher und außerdem wusste ich nicht wie ich solche " [DOOR_START_CHAMBER] = " "Aliase" für statische array geschrieben werden müssen, dachte mir aber das es geht. enum {} hat die KI vorgeschlagen und das habe ich übernommen da ich es davor nicht kannte.
+Zusammenhängend damit, wurde auch für das tatsächliche "bauen" der Welt in functions KI zur hilfe herangezogen. In der vorherigen implementatioin habe ich die welt über ein großes statisches Array der locations gebaut in welchen doors und objects fest eingebettet waren. Ich wollte beim bauen dann in drei großen arrays zunächst alle instanzen definieren. Um diese dann nach belieben in die Locations zu legen. Da war ich mir wieder wegen der pointer logik unsicher und außerdem wusste ich nicht wie ich solche " [DOOR_START_CHAMBER] = " "Aliase" für statische array geschrieben werden müssen, dachte mir aber das es geht. (^^)
 
 Es gab/gibt einzelne funktionen wie otherside() oder teile von showMenu() welche zu teilen auch mit KI geschrieben wurden. Diese wurden/werden aber im zuge neuer logik mit eigenem code ersetzt und dienten als erste stütze in der umsetzung. 
 

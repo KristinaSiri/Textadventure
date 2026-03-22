@@ -422,7 +422,7 @@ void act_openComp(GameState *gs, void* prxy, void* token) {
         return;
     }
     else {
-        if (c -> itemCount == 0) {printf("%s is empty", c -> name); return;};
+        if (c -> itemCount == 0) {printf("%s is empty", c -> name); return;}
 
         for (int i = 0; i < c -> itemCount; i++) {
 
@@ -474,6 +474,23 @@ itm_satisfy(GameState *gs, void* prxy, void* token) {
         for (int i = 0; i < s -> actionCount; i++) s -> satActions[i].execute(gs, prxy, s -> satActions -> token);
     }
 
+}
+
+// Spagetthi? Weil will keine separate struktur für locked welche ich immer als token übergeben kann. DOch nicht weil ich der goat bin...
+
+sat_UnOrLock(GameState *gs, void* prxy, void* token) {
+
+    bool *locked = (bool*)token;
+
+    if (*locked == true){
+        printf("*click*");
+        *locked = false;
+    }
+    else if (*locked == false){
+        printf("*click*");
+        *locked = true;
+    }
+    return;
 }
 
 void act_giveItem(GameState *gs, void* prxy, void* token) {
