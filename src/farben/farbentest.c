@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "farben.h" // eigener Header mit Makros für die Farben
-
+/*
 int main(void)
 {
 	printf("\n\n\n");
@@ -22,5 +22,4 @@ int main(void)
 	printf(kursiv "Text der kursiv geschrieben ist\n" normal);
 	return (0);
 }
-
-
+*/
