@@ -9,7 +9,7 @@ typedef struct GameState GameState;
 
 
 
-typedef void (*ActionFunc)(GameState *gs, void* target, void* token);
+typedef void (*ActionFunc)(GameState *gs, void* target, Token token);
 
 typedef enum {
     TYPE_DOOR, 
@@ -27,13 +27,17 @@ typedef enum {
 
 
 
+typedef struct {
+    ObjektType  *prxyTyp;
+    void*       ptrs[3];
 
+} Token;
 
 
 typedef struct {
     char        *name;
     ActionFunc  execute;
-    void*       token;
+    Token       token;
 
 } Action;
 

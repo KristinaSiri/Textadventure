@@ -5,12 +5,12 @@
 #include <gamestate.h>
 
 
-void act_openDoor(GameState *gs, void* prxy, void* token);
-void act_openComp(GameState *gs, void* prxy, void* token);
+void act_openDoor(GameState *gs, void* prxy, Token* token);
+void act_openComp(GameState *gs, void* prxy, Token* token);
 
-itm_satisfy(GameState *gs, void* prxy, void* token);
+itm_satisfy(GameState *gs, void* prxy, Token* token);
 
-void act_giveItem(GameState *gs, void* prxy, void* token);
+void act_giveItem(GameState *gs, void* prxy, Token* token);
 
 void env_handleInteract(GameState *gs, void *prxy , ObjektType typ);
 
@@ -275,8 +275,11 @@ void env_handleLook(GameState *gs) {
 
 void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
     switch (typ) {
+        
+        
         int choice;
         int i;
+
         case TYPE_DOOR: {
 
             Door *d = (Door*)prxy;
@@ -382,7 +385,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 
 
 
-void act_openDoor(GameState *gs, void* prxy, void* token) {
+void act_openDoor(GameState *gs, void* prxy, Token* token) {
 
     Door *d = (Door*)prxy;
     if (d -> locked) {
@@ -397,11 +400,14 @@ void act_openDoor(GameState *gs, void* prxy, void* token) {
     }
 }
 
+// für take() muss token -> ptrs[0] auf den pointer des Items innerhalb der struktur zeigen
 
 
-void act_take(GameState *gs, void* prxy, void* token) {
+void take(GameState *gs, void* prxy, Token* token) {
 
-    Item *i = (Item*)token;
+    Token *t = (Token*)token;
+
+    Item *i = t -> ptrs[0];
     
 
     gs -> itemsInv[gs -> itemsInvCount] = i;
@@ -412,10 +418,15 @@ void act_take(GameState *gs, void* prxy, void* token) {
 }
 
 
-void act_openComp(GameState *gs, void* prxy, void* token) {
+void act_openComp(GameState *gs, void* prxy, Token* token) {
 
-    Objekt *o = (Objekt*)prxy;
-    Compartment *c = (Compartment*)token;
+
+
+    
+
+    Token *t = (Token*)token;
+
+    Compartment *c = t -> ptrs[0];
     
     if (c -> locked) {
         printf("\n\n\nThis compartment is locked.\nTry using a key...\n\n\n");
@@ -441,8 +452,15 @@ void act_openComp(GameState *gs, void* prxy, void* token) {
                     while ((ch = getchar()) == '\n' || ch == '\r' || ch == ' ');
 
                     if (ch == 'y') {
+
+                        // "statischer" aufruf ist relativ klobig
+
+                        Token t = {
+                            .ptrs={c -> items[i]}
+                        };
                         
-                        act_take(gs, prxy, c -> items[i]);
+                        take(gs, prxy, &t);
+
                         c -> items[i] = NULL;
                         c -> itemCount--;
                     }
@@ -464,7 +482,7 @@ void act_openComp(GameState *gs, void* prxy, void* token) {
 
 }
 
-itm_satisfy(GameState *gs, void* prxy, void* token) {
+itm_satisfy(GameState *gs, void* prxy, Token* token) {
     
     Satisfier *s = (Satisfier*)token;
 
@@ -478,7 +496,7 @@ itm_satisfy(GameState *gs, void* prxy, void* token) {
 
 // Spagetthi? Weil will keine separate struktur für locked welche ich immer als token übergeben kann. DOch nicht weil ich der goat bin...
 
-sat_UnOrLock(GameState *gs, void* prxy, void* token) {
+void sat_UnOrLock(GameState *gs, void* prxy, Token* token) {
 
     bool *locked = (bool*)token;
 
@@ -493,7 +511,7 @@ sat_UnOrLock(GameState *gs, void* prxy, void* token) {
     return;
 }
 
-void act_giveItem(GameState *gs, void* prxy, void* token) {
+void act_giveItem(GameState *gs, void* prxy, Token* token) {
 
     Item **wantedItems = (Item **)token;
     Item *toggleItem = env_openInventory(gs);
