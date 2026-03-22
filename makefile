@@ -2,7 +2,7 @@
 TARGET_EXEC := textadventure
 
 BUILD_DIR := ./build
-SRC_DIRS := ./scr
+SRC_DIRS := ./src
 
 # Find all the C files we want to compile
 # Note the single quotes around the * expressions. The shell will incorrectly expand these otherwise, but we want to send the * directly to the find command.
