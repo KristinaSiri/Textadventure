@@ -5,7 +5,8 @@
 
 void gameInit(GameState *gs);
 Location *gameCurrentLocation(GameState *gs);
-void handleLook(GameState *gs);
-void handleInteract(GameState *gs, void *prxy , ObjektType typ);
+void env_handleLook(GameState *gs);
+void env_handleInteract(GameState *gs, void *prxy , ObjektType typ);
+
 
 #endif

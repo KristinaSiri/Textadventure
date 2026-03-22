@@ -4,6 +4,18 @@
 #include <string.h>
 #include <gamestate.h>
 
+
+void act_openDoor(GameState *gs, void* prxy, void* token);
+void act_openComp(GameState *gs, void* prxy, void* token);
+
+itm_satisfy(GameState *gs, void* prxy, void* token);
+
+void act_giveItem(GameState *gs, void* prxy, void* token);
+
+void env_handleInteract(GameState *gs, void *prxy , ObjektType typ);
+
+Item* env_openInventory(GameState *gs);
+
 enum {
 
     LOC_START = 0,
@@ -32,7 +44,7 @@ enum {
 };
 
 enum {
-
+    ITM_LEER = 0,
     ITM_TEST_ZETTEL,
     ITM_COUNT
 };
@@ -53,8 +65,6 @@ enum {
 
 
 
-void openDoor(GameState *gs, void* prxy, void* token);
-void openComp(GameState *gs, void* prxy, void* token);
 
 // INTERAKTIONS/CHOICE TOKEN LOGIK: Token Interaktionen immer zuerst in actions definieren. Dann standard actions.
 // Zum Beispiel für: open compart 1./2./3., give/use Item 1./2./3. oder ähnliches.
@@ -63,7 +73,7 @@ void openComp(GameState *gs, void* prxy, void* token);
 
 
 
-
+static  Person personPool[NPC_COUNT];
 
 
 static Door doorPool[DOOR_COUNT] = {
@@ -72,7 +82,7 @@ static Door doorPool[DOOR_COUNT] = {
         .description = "A rough archway connects cave and chamber.",
         .targetIndex = { LOC_START, LOC_CHAMBER },
         .actions    = {
-            {"open door", openDoor}
+            {.name = "open door", .execute = act_openDoor}
         },
         .actionCount = 1,
         .locked = false
@@ -80,10 +90,18 @@ static Door doorPool[DOOR_COUNT] = {
 };
 
 static  Item itemPool[ITM_COUNT] = {
+    [ITM_LEER] = {
+        .name = "leer"
+    },
+
     [ITM_TEST_ZETTEL] = {
         .name = "old letter",
         .itemType = ITM_TYPE_TEXT,
-        .description = "This is a test letter. Hope you are seeing this!"
+        .text = "This is a test letter. Hope you are seeing this!",
+        .itmActions = {
+            {.name = "satisfy", .execute = itm_satisfy, .token = &personPool[NPC_MINER].sat}
+        },
+        .actionCount = 1
     }
 };
 
@@ -103,7 +121,7 @@ static Objekt objectPool[OBJ_COUNT] = {
         .compartmens = {&compPool[COMP_TEST]},
         .compaCount = 1,
         .actions = {
-            {"open drawer", openComp, &compPool[COMP_TEST]}
+            {.name = "open drawer", .execute = act_openComp, .token = &compPool[COMP_TEST]}
             
         },
         .actionCount = 1
@@ -117,8 +135,27 @@ static Objekt objectPool[OBJ_COUNT] = {
     }
 };
 
-static const Person personPool[NPC_COUNT] = {
-    [NPC_MINER] = { "miner", "An old miner watches you silently." },
+static  Person personPool[NPC_COUNT] = {
+    [NPC_MINER] = { 
+        .name = "miner", 
+        .description = "An old miner watches you silently.",
+        .wants = {&itemPool[ITM_TEST_ZETTEL], NULL, NULL},
+        .wantsCount = 1,
+        .actions = {
+            {.name = "give item", .execute = act_giveItem, .token = &personPool[NPC_MINER].wants}
+        },
+        .actionCount = 1,
+        .sat = {
+            .level = 1, 
+            .satActions = {
+                {
+                    .execute = act_openComp, 
+                    .token = &compPool[COMP_TEST]
+                }
+            }, 
+            .actionCount = 1
+        }
+    },  
     [NPC_GUARD] = { "guard", "A guard keeps his distance." }
 };
 
@@ -156,6 +193,11 @@ void gameInit(GameState *gs) {
     gs->numLocations = sizeof(worldData) / sizeof(worldData[0]);
     gs->currentLocation = 0;
     gs->running = true;
+    gs->itemsInvCount = 0;
+    
+    for (int i = 0; i < 10; i++) {           // add this back
+            gs->itemsInv[i] = NULL;
+    };
 }
 
 
@@ -169,9 +211,9 @@ Location *gameCurrentLocation(GameState *gs) {
 
 
 
-void handleInteract(GameState *gs, void *prxy , ObjektType typ);
 
-void handleLook(GameState *gs) {
+
+void env_handleLook(GameState *gs) {
     Location *current = &gs -> locations[gs->currentLocation];
     
     printf("\nYou look around and see:\n");
@@ -205,39 +247,40 @@ void handleLook(GameState *gs) {
 
         const Person *p = current->persons[choice-1];
         printf("\n%s\n", p->description);
-        handleInteract(gs, (void*)p, TYPE_PERSON);
+        env_handleInteract(gs, (void*)p, TYPE_PERSON);
 
     } else if (choice <= i + j) {
 
         const Door *d = current->doors[choice - i - 1];
         printf("\n%s\n", d->description);
-        handleInteract(gs, (void*)d, TYPE_DOOR);
+        env_handleInteract(gs, (void*)d, TYPE_DOOR);
 
     } else if (choice <= i + j + k) {
 
         const Objekt *o = current->objects[choice - i - j - 1];
         printf("\n%s\n", o->description);
-        handleInteract(gs, (void*)o, TYPE_OBJECT);
+        env_handleInteract(gs, (void*)o, TYPE_OBJECT);
 
     } else {
 
         printf("Ungültige Wahl.\n");
     }
 
+    return;
 
 }
 
 
 
 
-void handleInteract(GameState *gs, void *prxy , ObjektType typ) {
+void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
     switch (typ) {
         int choice;
         int i;
         case TYPE_DOOR: {
 
             Door *d = (Door*)prxy;
-            printf("\n What do you want to do?\n");
+            printf("\nWhat do you want to do?\n");
 
 
             for (i = 0 ; i < d -> actionCount; i++) {
@@ -288,7 +331,6 @@ void handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             }
 
             choice <= i+1 ? p -> actions[choice - 1].execute(gs, p, p -> actions[choice - 1].token) :
-
             printf("invalid");
             }
             break;
@@ -334,14 +376,13 @@ void handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             break;
     }
 
+    return;
+
 }
 
 
 
-
-
-
-void openDoor(GameState *gs, void* prxy, void* token) {
+void act_openDoor(GameState *gs, void* prxy, void* token) {
 
     Door *d = (Door*)prxy;
     if (d -> locked) {
@@ -349,17 +390,29 @@ void openDoor(GameState *gs, void* prxy, void* token) {
         return;
     }
     else {
-        gs -> currentLocation == d -> targetIndex[0] ? gs -> currentLocation = d -> targetIndex[1], handleLook(gs) :
-        gs -> currentLocation == d -> targetIndex[1] ? gs -> currentLocation = d -> targetIndex[0], handleLook(gs) :
+        gs -> currentLocation == d -> targetIndex[0] ? gs -> currentLocation = d -> targetIndex[1] :
+        gs -> currentLocation == d -> targetIndex[1] ? gs -> currentLocation = d -> targetIndex[0] :
         printf("You are not supposed to be here! (or get there?)");
+        return;
     }
 }
 
 
 
+void act_take(GameState *gs, void* prxy, void* token) {
+
+    Item *i = (Item*)token;
+    
+
+    gs -> itemsInv[gs -> itemsInvCount] = i;
+    gs->itemsInvCount++; 
+    
+    printf("\n\n\n%s added to inventory.\n\n\n", i -> name);
+
+}
 
 
-void openComp(GameState *gs, void* prxy, void* token) {
+void act_openComp(GameState *gs, void* prxy, void* token) {
 
     Objekt *o = (Objekt*)prxy;
     Compartment *c = (Compartment*)token;
@@ -369,24 +422,112 @@ void openComp(GameState *gs, void* prxy, void* token) {
         return;
     }
     else {
+        if (c -> itemCount == 0) {printf("%s is empty", c -> name); return;};
 
         for (int i = 0; i < c -> itemCount; i++) {
+
+            if (c->items[i] == NULL) continue; // Springe zum nächsten Slot
+        
             switch (c -> items[i] -> itemType) {
 
-                case ITM_TYPE_TEXT:
+                case ITM_TYPE_TEXT : {
                     
-                    printf("%s", c -> items[i] -> description);
+                    printf("\n\n\n%s:\n%s",c -> items[i] -> name, c -> items[i] -> text);
 
-                    break;
+                    printf("\n\nTake, y/n?\nYour choice: ");
+
+                    int ch;
+                    // 1. Puffer-Reinigung: Ignoriere alle alten Newlines/Leerzeichen
+                    while ((ch = getchar()) == '\n' || ch == '\r' || ch == ' ');
+
+                    if (ch == 'y') {
+                        
+                        act_take(gs, prxy, c -> items[i]);
+                        c -> items[i] = NULL;
+                        c -> itemCount--;
+                    }
+                }
+                break;
                 
-                default:
+                default:{
                     break;
                 }
+            }
         }
+
+        return;
                 
     }
 
     
 
+
+}
+
+itm_satisfy(GameState *gs, void* prxy, void* token) {
+    
+    Satisfier *s = (Satisfier*)token;
+
+    s -> level -= 1;
+
+    if (s -> level == 0) {
+        for (int i = 0; i < s -> actionCount; i++) s -> satActions[i].execute(gs, prxy, s -> satActions -> token);
+    }
+
+}
+
+void act_giveItem(GameState *gs, void* prxy, void* token) {
+
+    Item **wantedItems = (Item **)token;
+    Item *toggleItem = env_openInventory(gs);
+    if (toggleItem == NULL) return; 
+
+    int i = 0;
+    while (wantedItems[i] != NULL) {
+
+        if (wantedItems[i] == toggleItem) {
+
+            for (int j = 0; j < wantedItems[i] -> actionCount; j++) wantedItems[i] -> itmActions[j].execute(gs, prxy, wantedItems[i] -> itmActions[j].token);
+
+            wantedItems[i] = &itemPool[ITM_LEER];
+            return;
+        }
+        i++;
+    }
+
+    printf("\n\n\n%s cannot be used with here.\n\n\n", toggleItem -> name);
+    return;
+
+
+
+    
+}
+
+Item* env_openInventory(GameState *gs) {
+
+    printf("\n\n\nYour items:\n");
+
+    for (int i = 0; i < gs -> itemsInvCount; i++) {
+        printf("\n%d. %s", i+1, gs -> itemsInv[i] -> name);
+    }
+
+
+    printf("\nYour Choice: ");
+
+    int choice;
+    scanf("%d", &choice);
+
+    if (choice == 0) return NULL;
+    
+    
+    if (choice <= gs -> itemsInvCount) {
+        printf("\n\n\nJANK!!!: %s", gs -> itemsInv[choice-1] -> text);
+        return gs -> itemsInv[choice-1];
+    }
+
+    printf("Pockets to deep?");
+    return NULL;
+
+    
 
 }
