@@ -9,7 +9,7 @@ typedef struct GameState GameState;
 
 
 
-typedef void (*ActionFunc)(GameState *gs, void* target, Token token);
+
 
 typedef enum {
     TYPE_DOOR, 
@@ -29,9 +29,11 @@ typedef enum {
 
 typedef struct {
     ObjektType  *prxyTyp;
-    void*       ptrs[3];
+    void*       Tkns[3];
 
 } Token;
+
+typedef void (*ActionFunc)(GameState *gs, void* target, Token* token);
 
 
 typedef struct {
@@ -46,7 +48,7 @@ typedef struct {
     
     int     level;
     Action  satActions[3];
-    int     actionCount;
+    int     satActionCount;
 
 } Satisfier;
 
@@ -57,11 +59,11 @@ typedef struct {
     ItemType    itemType;
 
     union {
-        char    *text
+        char    *text;
     };
 
     Action      itmActions[2];
-    unsigned    actionCount;
+    unsigned    itmActionCount;
 
 } Item;
 
@@ -71,6 +73,7 @@ typedef struct {
 
     Item    *items[3];
     int     itemCount;
+
 
 } Compartment;
 

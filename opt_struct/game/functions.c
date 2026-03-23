@@ -96,20 +96,24 @@ static  Item itemPool[ITM_COUNT] = {
 
     [ITM_TEST_ZETTEL] = {
         .name = "old letter",
-        .itemType = ITM_TYPE_TEXT,
         .text = "This is a test letter. Hope you are seeing this!",
+
+        .itemType = ITM_TYPE_TEXT,
+
         .itmActions = {
-            {.name = "satisfy", .execute = itm_satisfy, .token = &personPool[NPC_MINER].sat}
+            {.name = "satisfy", .execute = itm_satisfy, .token = { .Tkns = {&personPool[NPC_MINER].sat}}}
         },
-        .actionCount = 1
+        .itmActionCount = 1
     }
 };
 
 static  Compartment compPool[COMP_COUNT] = {
     [COMP_TEST] = {
         .name = "Broken drawer",
+
         .items = {&itemPool[ITM_TEST_ZETTEL]},
         .itemCount = 1,
+
         .locked = false
     }
 };
@@ -118,13 +122,14 @@ static Objekt objectPool[OBJ_COUNT] = {
     [OBJ_TABLE] = { 
         .name = "Table", 
         .description = "A abondoned, very much messy desk.",
-        .compartmens = {&compPool[COMP_TEST]},
-        .compaCount = 1,
+        
         .actions = {
-            {.name = "open drawer", .execute = act_openComp, .token = &compPool[COMP_TEST]}
-            
+            {.name = "open drawer", .execute = act_openComp, .token= { .Tkns = { &compPool[COMP_TEST] } } }
         },
-        .actionCount = 1
+        .actionCount = 1,
+
+        .compartmens = {&compPool[COMP_TEST]},
+        .compaCount = 1
         
         
     },
@@ -139,21 +144,23 @@ static  Person personPool[NPC_COUNT] = {
     [NPC_MINER] = { 
         .name = "miner", 
         .description = "An old miner watches you silently.",
-        .wants = {&itemPool[ITM_TEST_ZETTEL], NULL, NULL},
-        .wantsCount = 1,
+
         .actions = {
-            {.name = "give item", .execute = act_giveItem, .token = &personPool[NPC_MINER].wants}
+            {.name = "give item", .execute = act_giveItem, .token = { .Tkns = { &personPool[NPC_MINER].wants } } }
         },
         .actionCount = 1,
+
+
+        .wants = {&itemPool[ITM_TEST_ZETTEL], NULL, NULL},
+        .wantsCount = 1,
+        
+        
         .sat = {
             .level = 1, 
             .satActions = {
-                {
-                    .execute = act_openComp, 
-                    .token = &compPool[COMP_TEST]
-                }
+                {.execute = act_openComp, .token = { .Tkns = { &compPool[COMP_TEST] } }}
             }, 
-            .actionCount = 1
+            .satActionCount = 1
         }
     },  
     [NPC_GUARD] = { "guard", "A guard keeps his distance." }
@@ -301,7 +308,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
                 return;
             }
 
-            choice <= i+1 ? d -> actions[choice - 1].execute(gs, d, d -> actions[choice - 1].token) :
+            choice <= i+1 ? d -> actions[choice - 1].execute(gs, d, &d -> actions[choice - 1].token) :
 
             printf("invalid");
             }
@@ -333,7 +340,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
                 return;
             }
 
-            choice <= i+1 ? p -> actions[choice - 1].execute(gs, p, p -> actions[choice - 1].token) :
+            choice <= i+1 ? p -> actions[choice - 1].execute(gs, p, &p -> actions[choice - 1].token) :
             printf("invalid");
             }
             break;
@@ -366,7 +373,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
                 return;
             }
 
-            choice <= i+1 ? o -> actions[choice - 1].execute(gs, o, o -> actions[choice - 1].token) :
+            choice <= i+1 ? o -> actions[choice - 1].execute(gs, o, &o -> actions[choice - 1].token) :
             
             printf("invalid");
             }
@@ -400,14 +407,14 @@ void act_openDoor(GameState *gs, void* prxy, Token* token) {
     }
 }
 
-// für take() muss token -> ptrs[0] auf den pointer des Items innerhalb der struktur zeigen
+// für take() muss token -> Tkns[0] auf das Item pointer array .itemsInv innerhalb der struktur zeigen
 
 
 void take(GameState *gs, void* prxy, Token* token) {
 
     Token *t = (Token*)token;
 
-    Item *i = t -> ptrs[0];
+    Item *i = t -> Tkns[0];
     
 
     gs -> itemsInv[gs -> itemsInvCount] = i;
@@ -418,6 +425,9 @@ void take(GameState *gs, void* prxy, Token* token) {
 }
 
 
+// für openComp() muss token -> Tkns[0] auf das Compartments pointer array .compartments innerhalb der struktur zeigen
+
+
 void act_openComp(GameState *gs, void* prxy, Token* token) {
 
 
@@ -426,7 +436,7 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
 
     Token *t = (Token*)token;
 
-    Compartment *c = t -> ptrs[0];
+    Compartment *c = t -> Tkns[0];
     
     if (c -> locked) {
         printf("\n\n\nThis compartment is locked.\nTry using a key...\n\n\n");
@@ -456,7 +466,7 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
                         // "statischer" aufruf ist relativ klobig
 
                         Token t = {
-                            .ptrs={c -> items[i]}
+                            .Tkns={c -> items[i]}
                         };
                         
                         take(gs, prxy, &t);
@@ -482,23 +492,33 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
 
 }
 
+
+// für itm_satisfy() muss token -> Tkns[0] auf den Satisfier .sat innerhalb der struktur zeigen
+
 itm_satisfy(GameState *gs, void* prxy, Token* token) {
     
-    Satisfier *s = (Satisfier*)token;
+    Token *t = (Token*)token;
+
+    Satisfier *s = t -> Tkns[0];
 
     s -> level -= 1;
 
     if (s -> level == 0) {
-        for (int i = 0; i < s -> actionCount; i++) s -> satActions[i].execute(gs, prxy, s -> satActions -> token);
+        for (int i = 0; i < s -> satActionCount; i++) s -> satActions[i].execute(gs, prxy, &s -> satActions[i].token);
     }
 
 }
 
 // Spagetthi? Weil will keine separate struktur für locked welche ich immer als token übergeben kann. DOch nicht weil ich der goat bin...
 
+
+// für unOrLocj() muss token -> Tkns[0] auf den .locked bool innerhalb der struktur zeigen
+
 void sat_UnOrLock(GameState *gs, void* prxy, Token* token) {
 
-    bool *locked = (bool*)token;
+    Token *t = (Token*)token;
+
+    bool *locked = t -> Tkns[0];
 
     if (*locked == true){
         printf("*click*");
@@ -511,9 +531,15 @@ void sat_UnOrLock(GameState *gs, void* prxy, Token* token) {
     return;
 }
 
+
+
+// für act_giveItem() muss token -> Tkns[0] auf das Item pointer array .wants innerhalb der struktur zeigen
+
 void act_giveItem(GameState *gs, void* prxy, Token* token) {
 
-    Item **wantedItems = (Item **)token;
+    Token *t = (Token*)token;
+
+    Item **wantedItems = t -> Tkns[0];
     Item *toggleItem = env_openInventory(gs);
     if (toggleItem == NULL) return; 
 
@@ -522,7 +548,7 @@ void act_giveItem(GameState *gs, void* prxy, Token* token) {
 
         if (wantedItems[i] == toggleItem) {
 
-            for (int j = 0; j < wantedItems[i] -> actionCount; j++) wantedItems[i] -> itmActions[j].execute(gs, prxy, wantedItems[i] -> itmActions[j].token);
+            for (int j = 0; j < wantedItems[i] -> itmActionCount; j++) wantedItems[i] -> itmActions[j].execute(gs, prxy, &wantedItems[i] -> itmActions[j].token);
 
             wantedItems[i] = &itemPool[ITM_LEER];
             return;
