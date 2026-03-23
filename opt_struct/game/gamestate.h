@@ -172,7 +172,7 @@ typedef struct GameState {
     unsigned    itemsInvCount;
 
     bool        running;
-};
+} GameState;
 
 
 void gameInit(GameState *gs);
