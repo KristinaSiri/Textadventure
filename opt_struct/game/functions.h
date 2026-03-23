@@ -1,8 +1,9 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <gamestate.h>
+#include "gamestate.h"
 
+void SpielUI(GameState *gs);
 void gameInit(GameState *gs);
 Location *gameCurrentLocation(GameState *gs);
 void env_handleLook(GameState *gs);
