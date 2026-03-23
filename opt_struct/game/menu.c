@@ -4,8 +4,10 @@
 #include "lebensanzeige.h" // eigener Header mit Makros, für die Darstellung der verschiedenen Lebensanzeigen
 #include <stdlib.h>
 #include <stddef.h>
+#include "gamestate.h"
+#include "functions.h"
 
-int main(void)
+void SpielUI(GameState *gs)
 {
 char Auswahl;
 char Spielername[15];
@@ -64,6 +66,4 @@ printf(löschen);
 printf(SpielStart, Spielername);
 printf(Lebensbalken, hp);
 
-return (0);
 }
-
