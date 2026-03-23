@@ -1,14 +1,12 @@
-
-
 #include <stdio.h>
 #include <string.h>
-#include <gamestate.h>
+#include "gamestate.h"
 
 
 void act_openDoor(GameState *gs, void* prxy, Token* token);
 void act_openComp(GameState *gs, void* prxy, Token* token);
 
-itm_satisfy(GameState *gs, void* prxy, Token* token);
+void itm_satisfy(GameState *gs, void* prxy, Token* token);
 
 void sat_UnOrLock(GameState *gs, void* prxy, Token* token);
 
@@ -556,7 +554,7 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
 
 // für itm_satisfy() muss token -> Tkns[0] auf den Satisfier .sat innerhalb der struktur zeigen
 
-itm_satisfy(GameState *gs, void* prxy, Token* token) {
+void itm_satisfy(GameState *gs, void* prxy, Token* token) {
     
     Token *t = (Token*)token;
 
