@@ -10,6 +10,8 @@ void act_openComp(GameState *gs, void* prxy, Token* token);
 
 itm_satisfy(GameState *gs, void* prxy, Token* token);
 
+void sat_UnOrLock(GameState *gs, void* prxy, Token* token);
+
 void act_giveItem(GameState *gs, void* prxy, Token* token);
 
 void env_handleInteract(GameState *gs, void *prxy , ObjektType typ);
@@ -46,6 +48,7 @@ enum {
 enum {
     ITM_LEER = 0,
     ITM_TEST_ZETTEL,
+    KEY_TEST,
     ITM_COUNT
 };
 
@@ -77,15 +80,26 @@ static  Person personPool[NPC_COUNT];
 
 
 static Door doorPool[DOOR_COUNT] = {
+
+    
     [DOOR_START_CHAMBER] = {
         .name = "stone arch",
         .description = "A rough archway connects cave and chamber.",
         .targetIndex = { LOC_START, LOC_CHAMBER },
         .actions    = {
-            {.name = "open door", .execute = act_openDoor}
+            {.name = "open door", .execute = act_openDoor},
+            {.name = "use item", .execute = act_giveItem}
         },
         .actionCount = 1,
-        .locked = false
+        .locked = true,
+
+        .sat = {
+            .level = 1, 
+            .satActions = {
+                {.execute = sat_UnOrLock, .token = { .Tkns = { &doorPool[DOOR_START_CHAMBER].locked } }}
+            }, 
+            .satActionCount = 1
+        }
     }
 };
 
@@ -104,21 +118,37 @@ static  Item itemPool[ITM_COUNT] = {
             {.name = "satisfy", .execute = itm_satisfy, .token = { .Tkns = {&personPool[NPC_MINER].sat}}}
         },
         .itmActionCount = 1
+    },
+
+    [KEY_TEST] = {
+        .name = "Key door 1",
+        .description = "This key might be usefull to open the first door.",
+
+        .itemType = ITM_TYPE_TEXT,
+
+        .itmActions = {
+            { .name = "Key 1", .execute = itm_satisfy, .token = { .Tkns = {&doorPool[DOOR_START_CHAMBER].sat} } }
+        },
+        .itmActionCount = 1
     }
 };
 
 static  Compartment compPool[COMP_COUNT] = {
+
+
     [COMP_TEST] = {
         .name = "Broken drawer",
 
-        .items = {&itemPool[ITM_TEST_ZETTEL]},
-        .itemCount = 1,
+        .items = { &itemPool[ITM_TEST_ZETTEL], &itemPool[KEY_TEST] },
+        .itemCount = 2,
 
         .locked = false
     }
 };
 
 static Objekt objectPool[OBJ_COUNT] = {
+
+
     [OBJ_TABLE] = { 
         .name = "Table", 
         .description = "A abondoned, very much messy desk.",
@@ -174,8 +204,8 @@ static Location worldData[LOC_COUNT] = {
         .description = "a dark cave",
         .doors = { &doorPool[DOOR_START_CHAMBER] },
         .doorCount = 1,
-        .objects = { &objectPool[OBJ_STONE] },
-        .objectCount = 1,
+        .objects = { &objectPool[OBJ_STONE], &objectPool[OBJ_TABLE] },
+        .objectCount = 2,
         .persons = { &personPool[NPC_MINER] },
         .personCount = 1
     },
@@ -185,7 +215,7 @@ static Location worldData[LOC_COUNT] = {
         .description = "a torch lit chamber",
         .doors = { &doorPool[DOOR_START_CHAMBER] },
         .doorCount = 1,
-        .objects = { &objectPool[OBJ_TABLE] },
+        .objects = {  },
         .objectCount = 1,
         .persons = { &personPool[NPC_GUARD] },
         .personCount = 1
@@ -391,6 +421,37 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 }
 
 
+void act_talk(GameState *gs, void* prxy, Token* token) {
+
+    Person *p = (Person*)prxy;
+
+
+    for (int i = 0; i < p -> diaCount; i++) {
+
+        printf("\n\n\n%s:\n\n%s",p -> name, p -> dialog[i]);
+
+        printf("\n\nYou: ...\n");
+        printf("\n1. %s\n", p -> dialogActionsA -> name);
+        printf("\n2. %s\n", p -> dialogActionsB -> name);
+
+        printf("\nYour Choice; ");
+
+        int decsion = 0;
+        
+        while(decsion == 0) {
+
+            int ch = 0;
+            scanf("%d", ch);
+
+            if (ch == 1) { p -> dialogActionsA -> execute(gs, prxy, &p -> dialogActionsA -> token); decsion = 1; }
+            else if (ch == 2) { p -> dialogActionsA -> execute(gs, prxy, &p -> dialogActionsB -> token); decsion = 1; }
+            else printf("\n\nYou need to decide...");
+    
+        }
+    }
+
+} 
+
 
 void act_openDoor(GameState *gs, void* prxy, Token* token) {
 
@@ -410,7 +471,7 @@ void act_openDoor(GameState *gs, void* prxy, Token* token) {
 // für take() muss token -> Tkns[0] auf das Item pointer array .itemsInv innerhalb der struktur zeigen
 
 
-void take(GameState *gs, void* prxy, Token* token) {
+void act_take(GameState *gs, void* prxy, Token* token) {
 
     Token *t = (Token*)token;
 
@@ -469,7 +530,7 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
                             .Tkns={c -> items[i]}
                         };
                         
-                        take(gs, prxy, &t);
+                        act_take(gs, prxy, &t);
 
                         c -> items[i] = NULL;
                         c -> itemCount--;

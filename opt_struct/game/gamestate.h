@@ -33,7 +33,7 @@ typedef struct {
 
 } Token;
 
-typedef void (*ActionFunc)(GameState *gs, void* target, Token* token);
+typedef void (*ActionFunc)(GameState *gs, void* prxy, Token* token);
 
 
 typedef struct {
@@ -123,6 +123,14 @@ typedef struct {
 
     Item        *wants[3];
     unsigned    wantsCount;
+
+    const char  *dialog[2];
+    const char  *choiceA[2];
+    Action      dialogActionsA[2];
+    const char  *choiceB[2];
+    Action      dialogActionsB[2];
+    unsigned    diaCount;
+
 
     Satisfier   sat;
 } Person;
