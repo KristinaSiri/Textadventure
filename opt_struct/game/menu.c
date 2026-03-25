@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include "gamestate.h"
 #include "functions.h"
+#include <unistd.h>
 
 void SpielUI(GameState *gs)
 {
@@ -65,5 +66,6 @@ scanf(" %14s", Spielername);
 printf(löschen);
 printf(SpielStart, Spielername);
 printf(Lebensbalken, hp);
+sleep(2);
 
 }
