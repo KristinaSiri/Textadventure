@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "gamestate.h"
-
+#include "farben.h"
+#include "menu.h"
+#include "lebensanzeige.h"
 
 void act_openDoor(GameState *gs, void* prxy, Token* token);
 void act_openComp(GameState *gs, void* prxy, Token* token);
@@ -164,8 +166,11 @@ static Objekt objectPool[OBJ_COUNT] = {
 
     [OBJ_STONE] = { 
         .name = "stone", 
-        .description = "A damp cave stone."
-    }
+        .description = "A damp cave stone.",
+
+// braucht noch eine .actions damit man etwas auswählen kann
+
+   },
 };
 
 static  Person personPool[NPC_COUNT] = {
@@ -231,7 +236,7 @@ void gameInit(GameState *gs) {
     gs->itemsInvCount = 0;
     
     for (int i = 0; i < 10; i++) {           // add this back
-            gs->itemsInv[i] = NULL;
+             gs->itemsInv[i] = NULL;
     };
 }
 
@@ -250,30 +255,36 @@ Location *gameCurrentLocation(GameState *gs) {
 
 void env_handleLook(GameState *gs) {
     Location *current = &gs -> locations[gs->currentLocation];
-    
-    printf("\nYou look around and see:\n");
+
+    printf(löschen);
+    printf(leerezeile5);
+    printf(weißH schwarz "%-31s" "You look around and see:" "%-31s" normal "\n", "", "");
+
+
 
     unsigned i;
     for (i = 0 ; i < current -> personCount; i++) {
-        printf("%d. %s\n", i + 1, current -> persons[i] -> name);
+	printf(leerezeile5);
+        printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i + 1, current -> persons[i] -> name);
     }
 
     unsigned j;
     for ( j = 0 ; j < current -> doorCount; j++) {
-        printf("%d. %s\n", i + j +1 , current -> doors[j] -> name);
+        printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i + j +1, current -> doors[j] -> name);
     }
 
     unsigned k;
     for ( k = 0 ; k < current -> objectCount; k++) {
-        printf("%d. %s\n", i + j + k + 1, current -> objects[k] -> name);
+        printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i + j + k + 1, current -> objects[k] -> name);
     }
-    
 
+    printf(leerezeile5);
+    printf(weißH schwarz "%-25s" "What do you want to look at?" "%-33s" normal "\n", "", "");
+    printf(leerezeile5);
+    printf(leerezeile);
+    printf(hp100);
+    printf("\nYour Choice: " normal);
 
-
-    printf("\nWhat do you want to look at?\n");
-    printf("Your Choice: ");
-    
     int choice;
     scanf("%d", &choice);
     
@@ -281,24 +292,38 @@ void env_handleLook(GameState *gs) {
     if (choice <= i) {
 
         const Person *p = current->persons[choice-1];
-        printf("\n%s\n", p->description);
+	printf(löschen);
+	printf(leerezeile5);
+        printf(weißH schwarz "%-28s" "%-58s" normal "\n", "", p->description);
+	printf(leerezeile5);
         env_handleInteract(gs, (void*)p, TYPE_PERSON);
 
     } else if (choice <= i + j) {
 
         const Door *d = current->doors[choice - i - 1];
-        printf("\n%s\n", d->description);
+	printf(löschen);
+	printf(leerezeile5);
+        printf(weißH schwarz "%-28s" "%-58s" normal "\n", "", d->description);
+	printf(leerezeile5);
         env_handleInteract(gs, (void*)d, TYPE_DOOR);
 
     } else if (choice <= i + j + k) {
 
         const Objekt *o = current->objects[choice - i - j - 1];
-        printf("\n%s\n", o->description);
+	printf(löschen);
+	printf(leerezeile5);
+        printf(weißH schwarz "%-28s" "%-58s" normal "\n", "", o->description);
+	printf(leerezeile5);
         env_handleInteract(gs, (void*)o, TYPE_OBJECT);
+
 
     } else {
 
+	printf(leerezeile10);
+	printf(leerezeile4);
         printf("Ungültige Wahl.\n");
+	printf(leerezeile10);
+	printf(leerezeile4);
     }
 
     return;
@@ -318,15 +343,18 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
         case TYPE_DOOR: {
 
             Door *d = (Door*)prxy;
-            printf("\nWhat do you want to do?\n");
-
+            printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
+	    printf(leerezeile2);
 
             for (i = 0 ; i < d -> actionCount; i++) {
-                printf("%d. %s\n", i+1, d -> actions[i].name);
+                printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, d -> actions[i].name);
+		printf(leerezeile10);
+		printf(leerezeile2);
+		printf(hp100);
             }
 
 
-            printf("\nYour Choice: ");
+            printf("\nYour Choice:  ");
 
             
             scanf("%d", &choice);
@@ -350,15 +378,19 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
         case TYPE_PERSON: {
 
             Person *p = (Person*)prxy;
-            printf("\nWhat do you want to do?\n");
+	    printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
+	    printf(leerezeile2);
 
             for (i = 0 ; i < p -> actionCount; i++) {
-                printf("%d. %s\n", i+1, p -> actions[i].name);
+                printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, p -> actions[i].name);
+                printf(leerezeile10);
+                printf(leerezeile2);
+                printf(hp100);
             }
 
 
 
-            printf("\nYour Choice: ");
+            printf("\nYour Choice:  ");
 
             
             scanf("%d", &choice);
@@ -381,17 +413,19 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
         case TYPE_OBJECT: {
 
             Objekt *o = (Objekt*)prxy;
-            printf("\nWhat do you want to do?\n");
+            printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
+	    printf(leerezeile2);
 
-            
             for (i = 0 ; i < o -> actionCount; i++) {
-                
-                printf("%d. %s\n", i+1, o -> actions[i].name);
-            }
+               printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, o -> actions[i].name);
+               printf(leerezeile10);
+               printf(leerezeile2);
+               printf(hp100);
+	       }
 
 
 
-            printf("\nYour Choice: ");
+            printf("\nYour Choice:  ");
 
             
             scanf("%d", &choice);
@@ -439,10 +473,10 @@ void act_talk(GameState *gs, void* prxy, Token* token) {
         while(decsion == 0) {
 
             int ch = 0;
-            scanf("%d", ch);
+            scanf("%d", &ch);
 
             if (ch == 1) { p -> dialogActionsA -> execute(gs, prxy, &p -> dialogActionsA -> token); decsion = 1; }
-            else if (ch == 2) { p -> dialogActionsA -> execute(gs, prxy, &p -> dialogActionsB -> token); decsion = 1; }
+            else if (ch == 2) { p -> dialogActionsB -> execute(gs, prxy, &p -> dialogActionsB -> token); decsion = 1; }
             else printf("\n\nYou need to decide...");
     
         }
@@ -512,9 +546,14 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
 
                 case ITM_TYPE_TEXT : {
                     
-                    printf("\n\n\n%s:\n%s",c -> items[i] -> name, c -> items[i] -> text);
-
-                    printf("\n\nTake, y/n?\nYour choice: ");
+		    printf(löschen);
+		    printf(leerezeile5);
+                    printf(weißH schwarz "%-12s" "%s: %-62s" normal "\n", "", c -> items[i] -> name, c -> items[i] -> text);
+		    printf(leerezeile15);
+		    printf(weißH schwarz "%-37s" "Take, y/n?" "%39s" normal "\n", "", "");
+		    printf(leerezeile5);
+		    printf(hp100);
+                    printf("\nYour Choice:  ");
 
                     int ch;
                     // 1. Puffer-Reinigung: Ignoriere alle alten Newlines/Leerzeichen
@@ -632,7 +671,7 @@ Item* env_openInventory(GameState *gs) {
     }
 
 
-    printf("\nYour Choice: ");
+    printf("\nYour Choice:  ");
 
     int choice;
     scanf("%d", &choice);
