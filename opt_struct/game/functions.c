@@ -36,7 +36,8 @@ enum {
     ENT_DRIVEWAY_GATEHOUSE,
     ENT_GATEHOUSE_MAIN,
     ENT_GATEHOUSE_OFFICE,
-    D5,
+    ENT_GATEHOUSE_CLOSET,
+    ENT_GATEHOUSE_GUARDSHK,
     DOOR_COUNT
     
 };
@@ -196,7 +197,7 @@ static Door doorPool[DOOR_COUNT] = {
         
     },
 
-    [] = {
+    [ENT_GATEHOUSE_CLOSET] = {
         .name = "",
         .description = "Test desc door 3",
 
@@ -213,7 +214,7 @@ static Door doorPool[DOOR_COUNT] = {
         
     },
 
-    [D5] = {
+    [ENT_GATEHOUSE_GUARDSHK] = {
         .name = "",
         .description = "Test desc door 3",
 
@@ -465,7 +466,7 @@ static Location worldData[LOC_COUNT] = {
     [LOC_GATEHOUSE_CLOSET] = {
         .tag = "LOC_GATEHOUSE_CLOSET",
         .description = "Test room desc 5",
-        .doors = { &doorPool[ENT_GATEHOUSE_OFFICE] },
+        .doors = { &doorPool[ENT_GATEHOUSE_CLOSET] },
         .doorCount = 1,
         .objects = {  },
         .objectCount = 0,
@@ -478,7 +479,7 @@ static Location worldData[LOC_COUNT] = {
     [LOC_GATEHOUSE_GUARDSHACK] = {
         .tag = "",
         .description = "Test room desc 5",
-        .doors = { &doorPool[ENT_GATEHOUSE_OFFICE] },
+        .doors = { &doorPool[ENT_GATEHOUSE_GUARDSHK] },
         .doorCount = 1,
         .objects = {  },
         .objectCount = 0,
