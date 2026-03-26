@@ -606,7 +606,7 @@ static  Item itemPool[ITM_COUNT] = {
 
     [ITM_VAULT_SIGIL] = {
         .name = "Vault Sigil",
-        .text = "A heavy stone disc etched with concentric rings and celestial symbols. It fits a door recess.",
+        .text = "A heavy stone disc etched with concentric rings and  celestial symbols. It fits a door recess.",
         .itemType = ITM_TYPE_TEXT,
         .itmActions = {
             { .name = "Vault sigil", .execute = itm_satisfy, .token = { .Tkns = {&doorPool[ENT_OBSERVATORY_ANTE].sat} } }
@@ -1391,10 +1391,11 @@ void env_handleLook(GameState *gs)
 
 
 void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
-    switch (typ) {
-
           int choice;
           int i;
+
+    switch (typ) {
+
 
         case TYPE_DOOR: {
 
@@ -1406,6 +1407,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 	    printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
 	    printf(leerezeile5);
 
+	    printf(weißH schwarz "%-36s" "0. look around. %-34s" normal "\n", "", "");
             for (i = 0 ; i < d -> actionCount; i++) {
                 printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, d -> actions[i].name);
 	    }
@@ -1523,14 +1525,17 @@ void act_talk(GameState *gs, void* prxy, Token* token) {
 
         for (int i = 0; i < p -> diaCount; i++) {
 
-            printf("\n\n\n%s:\n\n%s",p -> name, p -> dialog[i]);
+	    printf(leerezeile5);
+            printf(weißH schwarz "%-20s" "%s: %-66s" normal "\n", "", p -> name, p -> dialog[i]);
+	    printf(leerezeile5);
             
             if (p -> decision == false) {
 
-                printf(weißH schwarz "\n\nYou: ...\n");
-                printf(weißH schwarz "\n1. %s\n", p -> dialogActionsA[i].name);
-                printf(weißH schwarz "\n2. %s\n", p -> dialogActionsB[i].name);
-
+                printf(weißH schwarz "%-20s" "You: ..." "%-58s" normal "\n", "", "");
+                printf(weißH schwarz "%-20s" "1. %-67s" normal "\n", "", p -> dialogActionsA[i].name);
+                printf(weißH schwarz "%-20s" "2. %-67s" normal "\n", "", p -> dialogActionsB[i].name);
+                printf(leerezeile10);
+		printf(hp100);
                 
 
                 printf("\nYour Answer; ");
@@ -1546,7 +1551,7 @@ void act_talk(GameState *gs, void* prxy, Token* token) {
 
                     if (ch == 1) { p -> dialogActionsA[i].execute(gs, prxy, &p -> dialogActionsA[i].token); d = 1; }
                     else if (ch == 2) { p -> dialogActionsB[i].execute(gs, prxy, &p -> dialogActionsB[i].token); d = 1; }
-                    else printf(weißH schwarz "\n\nYou need to answer...");
+                    else printf(weißH schwarz "%-32s" "You need to answer..." "%-33s" normal "\n", "", "");
             
                 }
 
