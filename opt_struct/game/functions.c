@@ -1053,7 +1053,7 @@ static Location worldData[LOC_COUNT] = {
     [LOC_MAIN_DRIVEWAY] = {
         .tag = "driveway",
         .description = "a large driveway ",
-        .doors = { &doorPool[ENT_PATH_ESTATE], &doorPool[ENT_DRIVEWAY_GATEHOUSE] },
+        .doors = {&doorPool[ENT_PATH_ESTATE],   &doorPool[ENT_DRIVEWAY_GATEHOUSE],  },
         .doorCount = 2,
         .objects = {  },
         .objectCount = 0,
@@ -1302,7 +1302,7 @@ void env_spawnCompartment(GameState *gs, void* prxy, Token *token) {
 
     Objekt *o = (Objekt*)t -> Tkns[0];
 
-    if (o->compaCount >= 3) { printf("\n\n\nNo more compartment slots.\n\n\n"); return; }
+    if (o->compaCount >= 3) { printf(weißH schwarz "%-30s" "No more compartment slots." "%-30s" normal "\n", "", ""); return; }
 
     o -> compartmens[o -> compaCount] = t -> Tkns[1];
     o -> compaCount ++;
@@ -1317,6 +1317,7 @@ void env_handleLook(GameState *gs)
     printf(löschen);
     printf(leerezeile5);
     printf(weißH schwarz "%-31s" "You look around and see:" "%-31s" normal "\n", "", "");
+    printf(leerezeile);
 
 
 
@@ -1351,27 +1352,27 @@ void env_handleLook(GameState *gs)
 
         const Person *p = current->persons[choice-1];
 	printf(löschen);
-	printf(leerezeile5);
-        printf(weißH schwarz "%-28s" "%-58s" normal "\n", "", p->description);
-	printf(leerezeile5);
+	printf(leerezeile2);
+        printf(weißH schwarz "%-20s" "%-66s" normal "\n", "", p->description);
+	printf(leerezeile3);
         env_handleInteract(gs, (void*)p, TYPE_PERSON);
 
     } else if (choice <= i + j) {
 
         const Door *d = current->doors[choice - i - 1];
 	printf(löschen);
-	printf(leerezeile5);
-        printf(weißH schwarz "%-28s" "%-58s" normal "\n", "", d->description);
-	printf(leerezeile5);
+	printf(leerezeile2);
+        printf(weißH schwarz "%-20s" "%-66s" normal "\n", "", d->description);
+	printf(leerezeile3);
         env_handleInteract(gs, (void*)d, TYPE_DOOR);
 
     } else if (choice <= i + j + k) {
 
         const Objekt *o = current->objects[choice - i - j - 1];
 	printf(löschen);
-	printf(leerezeile5);
-        printf(weißH schwarz "%-28s" "%-58s" normal "\n", "", o->description);
-	printf(leerezeile5);
+	printf(leerezeile2);
+        printf(weißH schwarz "%-20s" "%-66s" normal "\n", "", o->description);
+	printf(leerezeile3);
         env_handleInteract(gs, (void*)o, TYPE_OBJECT);
 
 
@@ -1379,7 +1380,7 @@ void env_handleLook(GameState *gs)
 
 	printf(leerezeile10);
 	printf(leerezeile4);
-        printf("Ungültige Wahl.\n");
+        printf(weißH schwarz "%-36s" "Ungültige Wahl." "%-37s" normal "\n", "", "");
 	printf(leerezeile10);
 	printf(leerezeile4);
     }
@@ -1389,28 +1390,27 @@ void env_handleLook(GameState *gs)
 }
 
 
-
-
 void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
     switch (typ) {
-        
-        
-        int choice;
-        int i;
+
+          int choice;
+          int i;
 
         case TYPE_DOOR: {
 
             Door *d = (Door*)prxy;
 
             while (1) {
-            printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
-	    printf(leerezeile2);
+
+	    printf(leerezeile5);
+	    printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
+	    printf(leerezeile5);
 
             for (i = 0 ; i < d -> actionCount; i++) {
                 printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, d -> actions[i].name);
 	    }
-            printf(leerezeile10);
-            printf(leerezeile2);
+            printf(leerezeile5);
+	    printf(leerezeile3);
             printf(hp100);
 
             printf("\nYour Choice:  ");
@@ -1418,35 +1418,35 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             scanf("%d", &choice);
 
             if (choice == 0) {
-                printf("\n\n\nback to looking...\n\n\n");
+                printf(weißH schwarz "%-34s" "back to looking..." "%-34s" normal "\n", "", "");
                 return;
             }
 
+
             choice <= i+1 ? d -> actions[choice - 1].execute(gs, d, &d -> actions[choice - 1].token) :
 
-            printf("invalid");
+            printf(weißH rot "%-40s" "invalid" "%-39s" normal, "", "");
             }
             }
-            break;
+         break;
 
 
-
-
-        
 
         case TYPE_PERSON: {
 
             Person *p = (Person*)prxy;
 
             while (1) {
+
+	    printf(leerezeile5);
 	    printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
 	    printf(leerezeile2);
 
             for (i = 0 ; i < p -> actionCount; i++) {
                 printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, p -> actions[i].name);
 		}
-            printf(leerezeile10);
-            printf(leerezeile2);
+            printf(leerezeile5);
+            printf(leerezeile3);
             printf(hp100);
 
 
@@ -1458,17 +1458,16 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             scanf("%d", &choice);
 
             if (choice == 0) {
-                printf("\n\n\nback to looking...\n\n\n");
+                printf(weißH schwarz "%-34s" "back to looking..." "%-34s" normal "\n", "", "");
                 return;
             }
 
             choice <= i+1 ? p -> actions[choice - 1].execute(gs, p, &p -> actions[choice - 1].token) :
-            printf("invalid");
+
+            printf(weißH rot "%-40s" "invalid" "%-39s" normal, "", "");
             }
             }
             break;
-        
-        
 
 
 
@@ -1478,28 +1477,30 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             Objekt *o = (Objekt*)prxy;
 
             while (1) {
+
+	    printf(leerezeile5);
             printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
 	    printf(leerezeile2);
 
             for (i = 0 ; i < o -> actionCount; i++) {
                printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, o -> actions[i].name);
                }
-            printf(leerezeile10);
-            printf(leerezeile2);
+            printf(leerezeile5);
+            printf(leerezeile3);
             printf(hp100);
 
             printf("\nYour Choice:  ");
-            
+
             scanf("%d", &choice);
 
             if (choice == 0) {
-                printf("\n\n\nback to looking...\n\n\n");
+                printf(weißH schwarz "%-34s" "back to looking..." "%-34s" normal "\n", "", "");
                 return;
             }
 
             choice <= i+1 ? o -> actions[choice - 1].execute(gs, o, &o -> actions[choice - 1].token) :
             
-            printf("invalid");
+            printf(weißH rot "%-40s" "invalid" "%-39s" normal, "", "");
             }
             }
             break;
@@ -1515,8 +1516,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 
 }
 
-
-
 void act_talk(GameState *gs, void* prxy, Token* token) {
 
     Person *p = (Person*)prxy;
@@ -1528,9 +1527,9 @@ void act_talk(GameState *gs, void* prxy, Token* token) {
             
             if (p -> decision == false) {
 
-                printf("\n\nYou: ...\n");
-                printf("\n1. %s\n", p -> dialogActionsA[i].name);
-                printf("\n2. %s\n", p -> dialogActionsB[i].name);
+                printf(weißH schwarz "\n\nYou: ...\n");
+                printf(weißH schwarz "\n1. %s\n", p -> dialogActionsA[i].name);
+                printf(weißH schwarz "\n2. %s\n", p -> dialogActionsB[i].name);
 
                 
 
@@ -1547,7 +1546,7 @@ void act_talk(GameState *gs, void* prxy, Token* token) {
 
                     if (ch == 1) { p -> dialogActionsA[i].execute(gs, prxy, &p -> dialogActionsA[i].token); d = 1; }
                     else if (ch == 2) { p -> dialogActionsB[i].execute(gs, prxy, &p -> dialogActionsB[i].token); d = 1; }
-                    else printf("\n\nYou need to answer...");
+                    else printf(weißH schwarz "\n\nYou need to answer...");
             
                 }
 
@@ -1571,8 +1570,9 @@ void act_openDoor(GameState *gs, void* prxy, Token* token) {
         return;
     }   
     else {
-        gs -> currentLocation == d -> targetIndex[0] ? (gs -> currentLocation = d -> targetIndex[1], printf(weißH schwarz "%-35s" "You enter %-41s" normal "\n" , "", gs -> locations[gs -> currentLocation].description )) :
-        gs -> currentLocation == d -> targetIndex[1] ? (gs -> currentLocation = d -> targetIndex[0], printf(weißH schwarz "%-35s" "You enter %-41s" normal "\n", "", gs -> locations[gs -> currentLocation].description )) :
+	printf(leerezeile5);
+        gs -> currentLocation == d -> targetIndex[0] ? (gs -> currentLocation = d -> targetIndex[1], printf(löschen), printf(leerezeile5), printf(weißH schwarz "%-22s" "You enter %-54s" normal "\n" , "", gs -> locations[gs -> currentLocation].description )) :
+        gs -> currentLocation == d -> targetIndex[1] ? (gs -> currentLocation = d -> targetIndex[0], printf(löschen), printf(leerezeile5), printf(weißH schwarz "%-22s" "You enter %-54s" normal "\n", "", gs -> locations[gs -> currentLocation].description )) :
         printf(weißH rot "%-19s" "You are not supposed to be here! (or get there?)" "%-19s" normal "\n", "", "");
         return;
     }
@@ -1587,12 +1587,12 @@ void act_take(GameState *gs, void* prxy, Token* token) {
 
     Item *i = t -> Tkns[0];
     
-    if (gs->itemsInvCount >= 10) { printf("\n\n\nInventory full.\n\n\n"); return; }
+    if (gs->itemsInvCount >= 10) { printf(weißH schwarz "%-36s" "Inventory full." "%-37s" normal "\n", "", ""); return; }
 
     gs -> itemsInv[gs -> itemsInvCount] = i;
     gs->itemsInvCount++; 
     
-    printf("\n\n\n%s added to inventory.\n\n\n", i -> name);
+    printf(weißH schwarz "%-31s" "%s added to inventory." "%-33s" normal "\n", "", i -> name, "");
 
 }
 
@@ -1607,7 +1607,8 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
     Compartment *c = t -> Tkns[0];
     
     if (c -> locked) {
-        printf("\n\n\nThis compartment is locked.\nTry using a key...\n\n\n");
+        printf(weißH schwarz "%-29s" "This compartment is locked." "%-30s" normal "\n", "", "");
+              (weißH schwarz "%-34s" "Try using a key..." "%-34s" normal "\n", "", "");
         return;
     }
     else {

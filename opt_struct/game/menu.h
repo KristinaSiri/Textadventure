@@ -31,5 +31,5 @@
 #define SpielSchwierigkeit leerezeile5 leerezeile3 SpielSchwierigkeitText leerezeile4 SpielSchwierigkeitOption1 leerezeile2 SpielSchwierigkeitOption2 leerezeile2 \
 SpielSchwierigkeitOption3 leerezeile10
 #define SpielmenuFalscheEingabe leerezeile SpielmenuFalscheEingabeText leerezeile
-#define SpielerName leerezeile5 SpielerNameText leerezeile4 leerezeile15 leerezeile2
+#define SpielerName leerezeile5 SpielerNameText leerezeile4 leerezeile15 leerezeile5
 #define SpielStart leerezeile10 leerezeile3 SpielStartText1 SpielStartText2 leerezeile10 leerezeile2
