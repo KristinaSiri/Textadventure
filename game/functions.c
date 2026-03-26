@@ -1412,7 +1412,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
                 printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, d -> actions[i].name);
 	        }
             printf(leerezeile3);
-            printf(weißH schwarz "%-36s" "0. go back to looking... %-32s" normal "\n", "", "");
+            printf(weißH schwarz "%-36s" "0. go back to looking... %-25s" normal "\n", "", "");
 	        printf(leerezeile4);
             printf(hp100);
 
@@ -1451,7 +1451,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
                 printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, p -> actions[i].name);
 		    }
             printf(leerezeile3);
-            printf(weißH schwarz "%-36s" "0. go back to looking... %-32s" normal "\n", "", "");
+            printf(weißH schwarz "%-36s" "0. go back to looking... %-25s" normal "\n", "", "");
 	        printf(leerezeile4);
             printf(hp100);
 
@@ -1489,7 +1489,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
                printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, o -> actions[i].name);
                }
             printf(leerezeile3);
-            printf(weißH schwarz "%-36s" "0. go back to looking... %-34s" normal "\n", "", "");
+            printf(weißH schwarz "%-36s" "0. go back to looking... %-25s" normal "\n", "", "");
 	        printf(leerezeile4);
             printf(hp100);
 
@@ -1539,7 +1539,7 @@ void act_talk(GameState *gs, void* prxy, Token* token) {
 		        printf(hp100);
                 
 
-                printf("\nYour Answer; ");
+                printf("\nYour Answer: ");
 
 
 
@@ -1614,7 +1614,7 @@ void act_openComp(GameState *gs, void* prxy, Token* token) {
     
     if (c -> locked) {
         printf(weißH schwarz "%-29s" "This compartment is locked." "%-30s" normal "\n", "", "");
-              (weißH schwarz "%-34s" "Try using a key..." "%-34s" normal "\n", "", "");
+         printf(weißH schwarz "%-34s" "Try using a key..." "%-34s" normal "\n", "", "");
         return;
     }
     else {
