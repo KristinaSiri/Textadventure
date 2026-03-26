@@ -29,6 +29,28 @@ Das ganze neigt aber denke ich dazu unübersichtlich zu werde.
 
 
 ### nutzung von KI
+#### UPDATE WORLD BUILDING
+ich war jetzt mal so frei und hab KI als tool für wordlbuildung benutz, da das ganze nach erstellen des tutorials in Gate house eigentlich immer das gleiche ist. 
+
+Hier der prompt:
+
+sinze you seem quite capable in understanding the game your taskt is to wite the part after LOC_MAIN_ENTERANCE (ich hatte das modell zunächst gebeten die bestehenden funktionen und build arrays für das tutorial zu lesen und zu beschreiben was in dem spiel passiert).
+
+To do that please write a marker arround the designated build arrays so my TAs know.
+Please only use the functions and logic allready implemented. But it should allready be enough to build relativly complex riddles.
+Try and use around 10 - 15 rooms and divide around 3-4 riddles across them.
+Maybe use common logical /video game / philosophical riddles, and dont shy away from making them hard.
+Be crative, use things like hidden actions and dialoge options for real interactive gameplay. Oriantate on the given example riddle in the tutorial. With the action class in the multiply layers of structure the possibilitys should be broad.
+Have fun.
+
+
+Ich gebe den thouthprozess gerne auf nachfrage, da er relativ intersannt ist, da der Agent erst lernt wie er problme in der library handeln kann. Bei den ersten beiden versuchen ist er auch getimeouted.
+
+
+
+
+
+
 #### UPDATE
 
 Bis auf einzelne strukturen in der gs.h datei welche im ersten push als blueprint für mich dienten, befindet sich nun kein Code mehr in opt_struct welcher unmittelbar durch KI erstellt wurde. Unten angeführte funktionsskizzen wurden dabei im zuge der neuen logik vollständig durch selbstproduzierte ersetzt.
