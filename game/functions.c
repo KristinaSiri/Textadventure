@@ -27,20 +27,7 @@ enum {
     LOC_GATEHOUSE_CLOSET,
     LOC_GATEHOUSE_GUARDSHACK,
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-    LOC_MAIN_HALL,
-    LOC_LIBRARY,
-    LOC_STUDY,
-    LOC_TROPHY_ROOM,
-    LOC_STATUE_ALCOVE,
-    LOC_CELLAR,
-    LOC_WINE_VAULT,
-    LOC_UPPER_LANDING,
-    LOC_BEDROOM,
-    LOC_OBSERVATORY,
-    LOC_VAULT_ANTECHAMBER,
-    LOC_VAULT,
-    /* ============== NEW ESTATE CONTENT END ================ */
+   
     LOC_COUNT
 };
 
@@ -56,20 +43,7 @@ enum {
     
     ENT_GATEHOUSE_MAIN,
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-    ENT_ENTRANCE_HALL,
-    ENT_HALL_LIBRARY,
-    ENT_LIBRARY_STUDY,
-    ENT_HALL_TROPHY,
-    ENT_TROPHY_ALCOVE,
-    ENT_HALL_CELLAR,
-    ENT_CELLAR_WINE,
-    ENT_HALL_UPPER,
-    ENT_UPPER_BEDROOM,
-    ENT_UPPER_OBSERVATORY,
-    ENT_OBSERVATORY_ANTE,
-    ENT_ANTE_VAULT,
-    /* ============== NEW ESTATE CONTENT END ================ */
+
     DOOR_COUNT
     
 };
@@ -82,16 +56,6 @@ enum {
     OBJ_SIDEBOARD,
     OBJ_LAMP,
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-    OBJ_BOOKSHELF,
-    OBJ_TROPHY_CASE,
-    OBJ_STATUE,
-    OBJ_WINE_RACK,
-    OBJ_BEDSIDE_TABLE,
-    OBJ_TELESCOPE,
-    OBJ_VAULT_MECHANISM,
-    OBJ_VAULT_CHEST,
-    /* ============== NEW ESTATE CONTENT END ================ */
     OBJ_COUNT
 };
 
@@ -101,12 +65,6 @@ enum {
     NPC_GUARD,
     NPC_GRANNY,
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-    NPC_LIBRARIAN,
-    NPC_PHILOSOPHER,
-    NPC_WINEMASTER,
-    NPC_CARETAKER,
-    /* ============== NEW ESTATE CONTENT END ================ */
     NPC_COUNT
 
 };
@@ -122,14 +80,6 @@ enum {
     KEY_GATEH_MAIN,
     KEY_WORKDESK,
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-    ITM_ECHO_BOOK,
-    ITM_TORCH,
-    ITM_ESTATE_KEY,
-    ITM_STAR_MAP,
-    ITM_VAULT_SIGIL,
-    ITM_GOLDEN_CROWN,
-    /* ============== NEW ESTATE CONTENT END ================ */
 
     ITM_COUNT
 };
@@ -141,13 +91,6 @@ enum {
     COMP_DESK_LOCKED,
     COMP_GATEH_WD_LS,
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-    COMP_BOOKSHELF_SECRET,
-    COMP_STATUE_BASE,
-    COMP_BEDSIDE,
-    COMP_TELESCOPE_BASE,
-    COMP_VAULT_CHEST_C,
-    /* ============== NEW ESTATE CONTENT END ================ */
 
     COMP_COUNT
 };
@@ -306,171 +249,7 @@ static Door doorPool[DOOR_COUNT] = {
     },
 
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-
-    [ENT_ENTRANCE_HALL] = {
-        .name = "grand entrance",
-        .description = "A pair of tall oak doors, slightly ajar, lead into the estate's main hall.",
-        .targetIndex = { LOC_MAIN_ENTRANCE, LOC_MAIN_HALL },
-        .actions = {
-            {.name = "enter", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_HALL_LIBRARY] = {
-        .name = "library door",
-        .description = "An arched doorway with carved lettering: 'SILENTIUM'.",
-        .targetIndex = { LOC_MAIN_HALL, LOC_LIBRARY },
-        .actions = {
-            {.name = "go through", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_LIBRARY_STUDY] = {
-        .name = "study passage",
-        .description = "A narrow passage connects the library to a private study.",
-        .targetIndex = { LOC_LIBRARY, LOC_STUDY },
-        .actions = {
-            {.name = "go through", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_HALL_TROPHY] = {
-        .name = "trophy room door",
-        .description = "A heavy iron door with hunting motifs etched into the metal.",
-        .targetIndex = { LOC_MAIN_HALL, LOC_TROPHY_ROOM },
-        .actions = {
-            {.name = "enter", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_TROPHY_ALCOVE] = {
-        .name = "alcove archway",
-        .description = "A stone archway leads deeper into a shadowed alcove with a large statue.",
-        .targetIndex = { LOC_TROPHY_ROOM, LOC_STATUE_ALCOVE },
-        .actions = {
-            {.name = "go through", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_HALL_CELLAR] = {
-        .name = "cellar hatch",
-        .description = "A reinforced trapdoor in the floor, sealed with an old mechanism.",
-        .targetIndex = { LOC_MAIN_HALL, LOC_CELLAR },
-        .actions = {
-            {.name = "open hatch", .execute = act_openDoor},
-            {.name = "use item", .execute = act_giveItem, .token = { .Tkns = { &doorPool[ENT_HALL_CELLAR].wants } } }
-        },
-        .wants = {&itemPool[ITM_ECHO_BOOK]},
-        .wantsCount = 1,
-        .actionCount = 2,
-        .locked = true,
-        .sat = {
-            .level = 1,
-            .satActions = {
-                {.execute = sat_UnOrLock, .token = { .Tkns = { &doorPool[ENT_HALL_CELLAR].locked } } }
-            },
-            .satActionCount = 1
-        }
-    },
-
-    [ENT_CELLAR_WINE] = {
-        .name = "wine vault entrance",
-        .description = "A low archway smelling of old oak and fermented grapes.",
-        .targetIndex = { LOC_CELLAR, LOC_WINE_VAULT },
-        .actions = {
-            {.name = "go through", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_HALL_UPPER] = {
-        .name = "grand staircase gate",
-        .description = "An ornate wrought-iron gate blocks the grand staircase leading up.",
-        .targetIndex = { LOC_MAIN_HALL, LOC_UPPER_LANDING },
-        .actions = {
-            {.name = "open gate", .execute = act_openDoor},
-            {.name = "use item", .execute = act_giveItem, .token = { .Tkns = { &doorPool[ENT_HALL_UPPER].wants } } }
-        },
-        .wants = {&itemPool[ITM_ESTATE_KEY]},
-        .wantsCount = 1,
-        .actionCount = 2,
-        .locked = true,
-        .sat = {
-            .level = 1,
-            .satActions = {
-                {.execute = sat_UnOrLock, .token = { .Tkns = { &doorPool[ENT_HALL_UPPER].locked } } }
-            },
-            .satActionCount = 1
-        }
-    },
-
-    [ENT_UPPER_BEDROOM] = {
-        .name = "bedroom door",
-        .description = "A faded wooden door with a brass handle, slightly warm to the touch.",
-        .targetIndex = { LOC_UPPER_LANDING, LOC_BEDROOM },
-        .actions = {
-            {.name = "open door", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_UPPER_OBSERVATORY] = {
-        .name = "observatory stairwell",
-        .description = "A spiral staircase winds upward into a domed tower.",
-        .targetIndex = { LOC_UPPER_LANDING, LOC_OBSERVATORY },
-        .actions = {
-            {.name = "open door", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = false
-    },
-
-    [ENT_OBSERVATORY_ANTE] = {
-        .name = "sealed passage",
-        .description = "A heavy stone slab with a circular recess in its center blocks the way.",
-        .targetIndex = { LOC_OBSERVATORY, LOC_VAULT_ANTECHAMBER },
-        .actions = {
-            {.name = "open passage", .execute = act_openDoor},
-            {.name = "use item", .execute = act_giveItem, .token = { .Tkns = { &doorPool[ENT_OBSERVATORY_ANTE].wants } } }
-        },
-        .wants = {&itemPool[ITM_VAULT_SIGIL]},
-        .wantsCount = 1,
-        .actionCount = 2,
-        .locked = true,
-        .sat = {
-            .level = 1,
-            .satActions = {
-                {.execute = sat_UnOrLock, .token = { .Tkns = { &doorPool[ENT_OBSERVATORY_ANTE].locked } } }
-            },
-            .satActionCount = 1
-        }
-    },
-
-    [ENT_ANTE_VAULT] = {
-        .name = "vault door",
-        .description = "A massive iron vault door, cold to the touch. There is no keyhole — only a lever slot.",
-        .targetIndex = { LOC_VAULT_ANTECHAMBER, LOC_VAULT },
-        .actions = {
-            {.name = "open door", .execute = act_openDoor}
-        },
-        .actionCount = 1,
-        .locked = true
-    },
-
-    /* ============== NEW ESTATE CONTENT END ================ */
+    
     
 };
 
@@ -562,66 +341,7 @@ static  Item itemPool[ITM_COUNT] = {
         
     },
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-
-    [ITM_ECHO_BOOK] = {
-        .name = "Echo Book",
-        .text = "A leather-bound tome. The pages whisper when turned, repeating your words back in fading voices.",
-        .itemType = ITM_TYPE_TEXT,
-        .itmActions = {
-            { .name = "Echo book", .execute = itm_satisfy, .token = { .Tkns = {&doorPool[ENT_HALL_CELLAR].sat} } }
-        },
-        .itmActionCount = 1
-    },
-
-    [ITM_TORCH] = {
-        .name = "Ancient Torch",
-        .text = "A tar-soaked torch wrapped in linen. It burns with an unnaturally steady blue flame.",
-        .itemType = ITM_TYPE_TEXT,
-        .itmActions = {
-            { .name = "Torch", .execute = itm_satisfy, .token = { .Tkns = {&personPool[NPC_WINEMASTER].sat} } }
-        },
-        .itmActionCount = 1
-    },
-
-    [ITM_ESTATE_KEY] = {
-        .name = "Estate Key",
-        .text = "An ornate iron key with the estate crest embossed on the bow. It hums faintly.",
-        .itemType = ITM_TYPE_TEXT,
-        .itmActions = {
-            { .name = "Estate key", .execute = itm_satisfy, .token = { .Tkns = {&doorPool[ENT_HALL_UPPER].sat} } }
-        },
-        .itmActionCount = 1
-    },
-
-    [ITM_STAR_MAP] = {
-        .name = "Star Map",
-        .text = "A brittle parchment charting constellations. One star is circled in red ink: 'Polaris Oculi'.",
-        .itemType = ITM_TYPE_TEXT,
-        .itmActions = {
-            { .name = "Star map", .execute = env_unhideActions, .token = { .Tkns = {&objectPool[OBJ_TELESCOPE].actionCount} } }
-        },
-        .itmActionCount = 1
-    },
-
-    [ITM_VAULT_SIGIL] = {
-        .name = "Vault Sigil",
-        .text = "A heavy stone disc etched with concentric rings and  celestial symbols. It fits a door recess.",
-        .itemType = ITM_TYPE_TEXT,
-        .itmActions = {
-            { .name = "Vault sigil", .execute = itm_satisfy, .token = { .Tkns = {&doorPool[ENT_OBSERVATORY_ANTE].sat} } }
-        },
-        .itmActionCount = 1
-    },
-
-    [ITM_GOLDEN_CROWN] = {
-        .name = "The Golden Crown",
-        .text = "A crown of pure gold, studded with sapphires. The estate's lost treasure, finally reclaimed.",
-        .itemType = ITM_TYPE_TEXT,
-        .itmActionCount = 0
-    },
-
-    /* ============== NEW ESTATE CONTENT END ================ */
+    
 };
 
 static  Compartment compPool[COMP_COUNT] = {
@@ -650,44 +370,7 @@ static  Compartment compPool[COMP_COUNT] = {
 
     },
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-
-    [COMP_BOOKSHELF_SECRET] = {
-        .name = "hidden shelf",
-        .items = { &itemPool[ITM_ECHO_BOOK] },
-        .itemCount = 1,
-        .locked = false
-    },
-
-    [COMP_STATUE_BASE] = {
-        .name = "hollow statue base",
-        .items = { &itemPool[ITM_TORCH] },
-        .itemCount = 1,
-        .locked = false
-    },
-
-    [COMP_BEDSIDE] = {
-        .name = "bedside drawer",
-        .items = { &itemPool[ITM_STAR_MAP] },
-        .itemCount = 1,
-        .locked = false
-    },
-
-    [COMP_TELESCOPE_BASE] = {
-        .name = "telescope compartment",
-        .items = { &itemPool[ITM_VAULT_SIGIL] },
-        .itemCount = 1,
-        .locked = false
-    },
-
-    [COMP_VAULT_CHEST_C] = {
-        .name = "ancient vault chest",
-        .items = { &itemPool[ITM_GOLDEN_CROWN] },
-        .itemCount = 1,
-        .locked = false
-    },
-
-    /* ============== NEW ESTATE CONTENT END ================ */
+   
 };
 
 static Objekt objectPool[OBJ_COUNT] = {
@@ -754,98 +437,7 @@ static Objekt objectPool[OBJ_COUNT] = {
         
     },
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-
-    [OBJ_BOOKSHELF] = {
-        .name = "towering bookshelf",
-        .description = "Floor-to-ceiling shelves crammed with dusty volumes. Some spines are unreadable with age.",
-        .actions = {
-            {.name = "look behind the books", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_BOOKSHELF_SECRET] } } }
-        },
-        .actionCount = 0,
-        .compartmens = {&compPool[COMP_BOOKSHELF_SECRET]},
-        .compaCount = 1
-    },
-
-    [OBJ_TROPHY_CASE] = {
-        .name = "trophy case",
-        .description = "A glass display case filled with faded medals, antlers, and a stuffed raven.",
-        .actions = {
-            {.name = "open the glass panel", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_EMPTY] } } }
-        },
-        .actionCount = 1,
-        .compartmens = {&compPool[COMP_EMPTY]},
-        .compaCount = 1
-    },
-
-    [OBJ_STATUE] = {
-        .name = "marble statue",
-        .description = "A weathered marble figure of a man carrying the world on his shoulders. The base looks hollow.",
-        .actions = {
-            {.name = "lift the base", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_STATUE_BASE] } } }
-        },
-        .actionCount = 0,
-        .compartmens = {&compPool[COMP_STATUE_BASE]},
-        .compaCount = 1
-    },
-
-    [OBJ_WINE_RACK] = {
-        .name = "wine rack",
-        .description = "Rows upon rows of dusty bottles, most long since turned to vinegar.",
-        .actions = {
-            {.name = "browse the bottles", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_EMPTY] } } }
-        },
-        .actionCount = 1,
-        .compartmens = {&compPool[COMP_EMPTY]},
-        .compaCount = 1
-    },
-
-    [OBJ_BEDSIDE_TABLE] = {
-        .name = "bedside table",
-        .description = "A small nightstand with a single drawer. A candle stub sits on top, long extinguished.",
-        .actions = {
-            {.name = "open the drawer", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_BEDSIDE] } } }
-        },
-        .actionCount = 1,
-        .compartmens = {&compPool[COMP_BEDSIDE]},
-        .compaCount = 1
-    },
-
-    [OBJ_TELESCOPE] = {
-        .name = "brass telescope",
-        .description = "A grand telescope aimed at the night sky through a crack in the dome. Its lens is fogged.",
-        .actions = {
-            {.name = "use star map", .execute = act_giveItem, .token = { .Tkns = { &objectPool[OBJ_TELESCOPE].wants } } },
-            {.name = "peer through the lens", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_TELESCOPE_BASE] } } }
-        },
-        .actionCount = 1,
-        .wants = {&itemPool[ITM_STAR_MAP]},
-        .wantsCount = 1,
-        .compartmens = {&compPool[COMP_TELESCOPE_BASE]},
-        .compaCount = 1
-    },
-
-    [OBJ_VAULT_MECHANISM] = {
-        .name = "ancient mechanism",
-        .description = "A complex arrangement of gears and levers embedded in the wall, covered in dust.",
-        .actions = {
-            {.name = "pull the lever", .execute = sat_UnOrLock, .token = { .Tkns = { &doorPool[ENT_ANTE_VAULT].locked } } }
-        },
-        .actionCount = 0
-    },
-
-    [OBJ_VAULT_CHEST] = {
-        .name = "ornate chest",
-        .description = "A magnificent gilded chest sits alone on a stone pedestal, untouched for centuries.",
-        .actions = {
-            {.name = "open the chest", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_VAULT_CHEST_C] } } }
-        },
-        .actionCount = 1,
-        .compartmens = {&compPool[COMP_VAULT_CHEST_C]},
-        .compaCount = 1
-    },
-
-    /* ============== NEW ESTATE CONTENT END ================ */
+   
 };
 
 static  Person personPool[NPC_COUNT] = {
@@ -927,113 +519,7 @@ static  Person personPool[NPC_COUNT] = {
         }
     },
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-
-    [NPC_LIBRARIAN] = {
-        .name = "spectral librarian",
-        .description = "A translucent figure hovers between the shelves, adjusting books with ghostly fingers.",
-
-        .dialog = {
-            "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",
-            "Test",
-        },
-
-        .actions = {
-            {.name = "talk", .execute = act_talk}
-        },
-        .actionCount = 1,
-        .diaCount = 1,
-
-        .dialogActionsA = {
-            {.name = "An echo", .execute = env_unhideActions, .token = { .Tkns = {&objectPool[OBJ_BOOKSHELF].actionCount} } }
-        },
-        .dialogActionsB = {
-            {.name = "A ghost", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_EMPTY] } } }
-        }
-    },
-
-    [NPC_PHILOSOPHER] = {
-        .name = "stone philosopher",
-        .description = "A figure carved from living stone sits cross-legged. Its eyes follow you. It speaks in grinding tones.",
-
-        .dialog = {
-            "What walks on four legs at dawn, two legs at noon, and three legs at dusk?",
-            "Test",
-        },
-
-        .actions = {
-            {.name = "talk", .execute = act_talk}
-        },
-        .actionCount = 1,
-        .diaCount = 1,
-
-        .dialogActionsA = {
-            {.name = "The sun", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_EMPTY] } } }
-        },
-        .dialogActionsB = {
-            {.name = "Man", .execute = env_unhideActions, .token = { .Tkns = {&objectPool[OBJ_STATUE].actionCount} } }
-        }
-    },
-
-    [NPC_WINEMASTER] = {
-        .name = "old winemaster",
-        .description = "An ancient man sits among the barrels, shivering. His lantern has long since gone out.",
-
-        .dialog = {
-            "Cold and dark, this vault has been for years. My lantern died. Bring me a flame and I shall part with the master's key to the upper chambers.",
-            "Test",
-        },
-
-        .actions = {
-            {.name = "give item", .execute = act_giveItem, .token = { .Tkns = { &personPool[NPC_WINEMASTER].wants } } },
-            {.name = "talk", .execute = act_talk}
-        },
-        .actionCount = 2,
-        .diaCount = 1,
-
-        .wants = {&itemPool[ITM_TORCH]},
-        .wantsCount = 1,
-
-        .dialogActionsA = {
-            {.name = "I will find you a flame", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_EMPTY] } } }
-        },
-        .dialogActionsB = {
-            {.name = "Sit in the dark then", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_EMPTY] } } }
-        },
-
-        .sat = {
-            .level = 1,
-            .satActions = {
-                {.execute = act_take, .token = { .Tkns = { &itemPool[ITM_ESTATE_KEY] } } }
-            },
-            .satActionCount = 1
-        }
-    },
-
-    [NPC_CARETAKER] = {
-        .name = "blind caretaker",
-        .description = "A hunched figure in tattered robes guards the passage. Blind eyes stare through you.",
-
-        .dialog = {
-            "The more of them you take, the more of them you leave behind. What are they?",
-            "Test",
-        },
-
-        .actions = {
-            {.name = "talk", .execute = act_talk}
-        },
-        .actionCount = 1,
-        .diaCount = 1,
-
-        .dialogActionsA = {
-            {.name = "Memories", .execute = act_openComp, .token = { .Tkns = { &compPool[COMP_EMPTY] } } }
-        },
-        .dialogActionsB = {
-            {.name = "Footsteps", .execute = env_unhideActions, .token = { .Tkns = {&objectPool[OBJ_VAULT_MECHANISM].actionCount} } }
-        }
-    },
-
-    /* ============== NEW ESTATE CONTENT END ================ */
+   
 };
 
 
@@ -1076,7 +562,7 @@ static Location worldData[LOC_COUNT] = {
     [LOC_MAIN_ENTRANCE] = {
         .tag = "entrance courtyard",
         .description = "a wide cobblestone courtyard before the estate's grand facade",
-        .doors = { &doorPool[ENT_GATEHOUSE_MAIN], &doorPool[ENT_ENTRANCE_HALL] },
+        .doors = { &doorPool[ENT_GATEHOUSE_MAIN], },
         .doorCount = 2,
         .objects = {  },
         .objectCount = 0,
@@ -1122,141 +608,7 @@ static Location worldData[LOC_COUNT] = {
 
     },
 
-    /* ============== NEW ESTATE CONTENT START ============== */
-
-    [LOC_MAIN_HALL] = {
-        .tag = "main hall",
-        .description = "a grand hall with vaulted ceilings and faded tapestries depicting hunts and feasts",
-        .doors = { &doorPool[ENT_ENTRANCE_HALL], &doorPool[ENT_HALL_LIBRARY], &doorPool[ENT_HALL_TROPHY], &doorPool[ENT_HALL_CELLAR], &doorPool[ENT_HALL_UPPER] },
-        .doorCount = 5,
-        .objects = {  },
-        .objectCount = 0,
-        .persons = {  },
-        .personCount = 0
-    },
-
-    [LOC_LIBRARY] = {
-        .tag = "library",
-        .description = "a vast library choked with dust — shelves reach into shadow above",
-        .doors = { &doorPool[ENT_HALL_LIBRARY], &doorPool[ENT_LIBRARY_STUDY] },
-        .doorCount = 2,
-        .objects = { &objectPool[OBJ_BOOKSHELF] },
-        .objectCount = 1,
-        .persons = { &personPool[NPC_LIBRARIAN] },
-        .personCount = 1
-    },
-
-    [LOC_STUDY] = {
-        .tag = "study",
-        .description = "a small private study — ink-stained papers litter the writing desk",
-        .doors = { &doorPool[ENT_LIBRARY_STUDY] },
-        .doorCount = 1,
-        .objects = {  },
-        .objectCount = 0,
-        .persons = {  },
-        .personCount = 0
-    },
-
-    [LOC_TROPHY_ROOM] = {
-        .tag = "trophy room",
-        .description = "mounted heads and dusty weapons line the walls of this grim gallery",
-        .doors = { &doorPool[ENT_HALL_TROPHY], &doorPool[ENT_TROPHY_ALCOVE] },
-        .doorCount = 2,
-        .objects = { &objectPool[OBJ_TROPHY_CASE] },
-        .objectCount = 1,
-        .persons = {  },
-        .personCount = 0
-    },
-
-    [LOC_STATUE_ALCOVE] = {
-        .tag = "statue alcove",
-        .description = "a dim alcove dominated by a towering marble statue carrying the weight of the world",
-        .doors = { &doorPool[ENT_TROPHY_ALCOVE] },
-        .doorCount = 1,
-        .objects = { &objectPool[OBJ_STATUE] },
-        .objectCount = 1,
-        .persons = { &personPool[NPC_PHILOSOPHER] },
-        .personCount = 1
-    },
-
-    [LOC_CELLAR] = {
-        .tag = "cellar",
-        .description = "a cold stone cellar — water drips from the ceiling and the air smells of earth",
-        .doors = { &doorPool[ENT_HALL_CELLAR], &doorPool[ENT_CELLAR_WINE] },
-        .doorCount = 2,
-        .objects = {  },
-        .objectCount = 0,
-        .persons = {  },
-        .personCount = 0
-    },
-
-    [LOC_WINE_VAULT] = {
-        .tag = "wine vault",
-        .description = "a vaulted chamber lined with oak barrels and dusty bottle racks",
-        .doors = { &doorPool[ENT_CELLAR_WINE] },
-        .doorCount = 1,
-        .objects = { &objectPool[OBJ_WINE_RACK] },
-        .objectCount = 1,
-        .persons = { &personPool[NPC_WINEMASTER] },
-        .personCount = 1
-    },
-
-    [LOC_UPPER_LANDING] = {
-        .tag = "upper landing",
-        .description = "a moonlit landing at the top of the grand staircase — portraits watch from the walls",
-        .doors = { &doorPool[ENT_HALL_UPPER], &doorPool[ENT_UPPER_BEDROOM], &doorPool[ENT_UPPER_OBSERVATORY] },
-        .doorCount = 3,
-        .objects = {  },
-        .objectCount = 0,
-        .persons = {  },
-        .personCount = 0
-    },
-
-    [LOC_BEDROOM] = {
-        .tag = "bedroom",
-        .description = "a dusty master bedroom — the four-poster bed still has its moth-eaten curtains drawn",
-        .doors = { &doorPool[ENT_UPPER_BEDROOM] },
-        .doorCount = 1,
-        .objects = { &objectPool[OBJ_BEDSIDE_TABLE] },
-        .objectCount = 1,
-        .persons = {  },
-        .personCount = 0
-    },
-
-    [LOC_OBSERVATORY] = {
-        .tag = "observatory",
-        .description = "a domed tower room — starlight streams through cracks in the ceiling onto a grand telescope",
-        .doors = { &doorPool[ENT_UPPER_OBSERVATORY], &doorPool[ENT_OBSERVATORY_ANTE] },
-        .doorCount = 2,
-        .objects = { &objectPool[OBJ_TELESCOPE] },
-        .objectCount = 1,
-        .persons = {  },
-        .personCount = 0
-    },
-
-    [LOC_VAULT_ANTECHAMBER] = {
-        .tag = "vault antechamber",
-        .description = "a narrow stone chamber before the vault — gears and levers protrude from the walls",
-        .doors = { &doorPool[ENT_OBSERVATORY_ANTE], &doorPool[ENT_ANTE_VAULT] },
-        .doorCount = 2,
-        .objects = { &objectPool[OBJ_VAULT_MECHANISM] },
-        .objectCount = 1,
-        .persons = { &personPool[NPC_CARETAKER] },
-        .personCount = 1
-    },
-
-    [LOC_VAULT] = {
-        .tag = "the vault",
-        .description = "a glittering vault — gold and jewels are piled high, and at the center sits a magnificent chest",
-        .doors = { &doorPool[ENT_ANTE_VAULT] },
-        .doorCount = 1,
-        .objects = { &objectPool[OBJ_VAULT_CHEST] },
-        .objectCount = 1,
-        .persons = {  },
-        .personCount = 0
-    }
-
-    /* ============== NEW ESTATE CONTENT END ================ */
+    
     
 };
 
