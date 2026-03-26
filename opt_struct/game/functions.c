@@ -1401,18 +1401,17 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 
             Door *d = (Door*)prxy;
 
-            while (1) {
 
-	    printf(leerezeile5);
-	    printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
-	    printf(leerezeile5);
+	        printf(leerezeile5);
+	        printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
+	        printf(leerezeile5);
 
-	    printf(weißH schwarz "%-36s" "0. look around. %-34s" normal "\n", "", "");
+	        printf(weißH schwarz "%-36s" "0. look around. %-34s" normal "\n", "", "");
             for (i = 0 ; i < d -> actionCount; i++) {
                 printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, d -> actions[i].name);
-	    }
+	        }
             printf(leerezeile5);
-	    printf(leerezeile3);
+	        printf(leerezeile3);
             printf(hp100);
 
             printf("\nYour Choice:  ");
@@ -1429,8 +1428,7 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 
             printf(weißH rot "%-40s" "invalid" "%-39s" normal, "", "");
             }
-            }
-         break;
+            break;
 
 
 
@@ -1438,11 +1436,14 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 
             Person *p = (Person*)prxy;
 
-            while (1) {
 
-	    printf(leerezeile5);
-	    printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
-	    printf(leerezeile2);
+
+
+	        printf(leerezeile5);
+	        printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
+	        printf(leerezeile2);
+
+
 
             for (i = 0 ; i < p -> actionCount; i++) {
                 printf(weißH schwarz "%-36s" "%d. %-47s" normal "\n", "", i+1, p -> actions[i].name);
@@ -1468,7 +1469,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 
             printf(weißH rot "%-40s" "invalid" "%-39s" normal, "", "");
             }
-            }
             break;
 
 
@@ -1477,8 +1477,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
         case TYPE_OBJECT: {
 
             Objekt *o = (Objekt*)prxy;
-
-            while (1) {
 
 	    printf(leerezeile5);
             printf(weißH schwarz "%-30s" "What do you want to do?" "%-33s" normal "\n", "", "");
@@ -1503,7 +1501,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             choice <= i+1 ? o -> actions[choice - 1].execute(gs, o, &o -> actions[choice - 1].token) :
             
             printf(weißH rot "%-40s" "invalid" "%-39s" normal, "", "");
-            }
             }
             break;
 
@@ -1535,7 +1532,7 @@ void act_talk(GameState *gs, void* prxy, Token* token) {
                 printf(weißH schwarz "%-20s" "1. %-67s" normal "\n", "", p -> dialogActionsA[i].name);
                 printf(weißH schwarz "%-20s" "2. %-67s" normal "\n", "", p -> dialogActionsB[i].name);
                 printf(leerezeile10);
-		printf(hp100);
+		        printf(hp100);
                 
 
                 printf("\nYour Answer; ");
