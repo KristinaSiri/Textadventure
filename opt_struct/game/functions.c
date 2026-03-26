@@ -1379,7 +1379,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
         case TYPE_DOOR: {
 
             Door *d = (Door*)prxy;
-            while (1) {
             printf("\nWhat do you want to do?\n");
 
 
@@ -1402,7 +1401,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
 
             printf("invalid");
             }
-            }
             break;
 
 
@@ -1413,7 +1411,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
         case TYPE_PERSON: {
 
             Person *p = (Person*)prxy;
-            while (1) {
             printf("\nWhat do you want to do?\n");
 
             for (i = 0 ; i < p -> actionCount; i++) {
@@ -1435,7 +1432,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             choice <= i+1 ? p -> actions[choice - 1].execute(gs, p, &p -> actions[choice - 1].token) :
             printf("invalid");
             }
-            }
             break;
         
         
@@ -1446,7 +1442,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
         case TYPE_OBJECT: {
 
             Objekt *o = (Objekt*)prxy;
-            while (1) {
             printf("\nWhat do you want to do?\n");
 
             
@@ -1470,7 +1465,6 @@ void env_handleInteract(GameState *gs, void *prxy , ObjektType typ) {
             choice <= i+1 ? o -> actions[choice - 1].execute(gs, o, &o -> actions[choice - 1].token) :
             
             printf("invalid");
-            }
             }
             break;
 
