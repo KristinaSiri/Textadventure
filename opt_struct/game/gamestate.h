@@ -169,6 +169,7 @@ typedef struct GameState {
     Location    *locations;
     unsigned    numLocations;
     unsigned    currentLocation;
+    unsigned    wasLocation;
 
     Item        *itemsInv[10];
     unsigned    itemsInvCount;

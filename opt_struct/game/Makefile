@@ -6,6 +6,11 @@ menu: menu.c farben.h
 farbentest: farbentest.c farben.h
 	$(CC)	$(CFLAGS) -o farbentest farbentest.c
 
+.PHONY: clean
+
+clean:
+	rm -f main build/*.o build/textadventure
+
 
 
 
