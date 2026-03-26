@@ -5,7 +5,7 @@
 #include "lebensanzeige.h" // eigener Header mit Makros für die Darstellung der verschiedenen Lebensanzeigen
 #include <stdlib.h>
 
-int main(void)
+int lebensanzeige(void)
 {
 int Auswahl;
 printf(löschen);

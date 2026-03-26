@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "farben.h" // eigener Header mit Makros für die Farben
 
-int main(void)
+int farbentest(void)
 {
 	printf("\n\n\n");
 	printf("Alle Textfarben:\n");
