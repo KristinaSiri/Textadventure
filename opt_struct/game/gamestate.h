@@ -46,9 +46,9 @@ typedef struct {
 
 typedef struct {
     
-    int     level;
+    unsigned     level;
     Action  satActions[3];
-    int     satActionCount;
+    unsigned     satActionCount;
 
 } Satisfier;
 
@@ -72,7 +72,7 @@ typedef struct {
     bool    locked;
 
     Item    *items[3];
-    int     itemCount;
+    unsigned     itemCount;
 
 
 } Compartment;
@@ -125,11 +125,13 @@ typedef struct {
     unsigned    wantsCount;
 
     const char  *dialog[2];
-    const char  *choiceA[2];
+    
     Action      dialogActionsA[2];
-    const char  *choiceB[2];
+    
     Action      dialogActionsB[2];
+    
     unsigned    diaCount;
+    bool        decision;
 
 
     Satisfier   sat;
@@ -140,7 +142,7 @@ typedef struct {
 
 
 
-#define max_exits 4
+#define max_exits 5
 #define max_items 6
 #define max_persons 3
 
@@ -148,13 +150,13 @@ typedef struct {
     const char      *tag;
     const char      *description;
 
-    const Door      *doors[max_exits];
+    Door            *doors[max_exits];
     unsigned        doorCount;
 
-    const Objekt    *objects[max_items];
+    Objekt          *objects[max_items];
     unsigned        objectCount;
 
-    const Person    *persons[max_persons];
+    Person          *persons[max_persons];
     unsigned        personCount;
     
     unsigned        currentProxy;

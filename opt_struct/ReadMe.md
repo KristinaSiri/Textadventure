@@ -3,7 +3,7 @@
 
 ### prxys, tokens und actions
 
-Ich hoffe es ist nicht falsch, dass ich stolz auf diese logik bin. Aber ich habe wirklich lange überlegt und es erweist sich bisher als sehr felxibel.
+
 
 Zünächst habe ich mir in env_handleInteract() überlegt wie ich am besten eine interaction proxy aufbauen kann in welcher auf den "inhalt" der Instanz (also Door, Person oder Objekt) zugreifen kann. Die Antwort war klar: ein Pointer auf die Instanz, übergeben in env_handleLook(). Ich wusste blöß nicht wie den pointer im head von env_handleInteract() deklarieren muss weil er ja auf drei verschiedene Strukturen zeigen kann. 
 Dann habe ich void pointer entdeckt aber ich musste ein weiters schnipsel an art der struktur übergeben. Ich wollte es wieder über enum machen aber es muste typdef enum sein, damit ich auch das deklarieren kann... 
